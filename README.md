@@ -7,7 +7,7 @@ Feel free to help me clean up the messy code I produced in my early NodeJS days.
 
 Submit bugs and feature requests as GitHub issues.
 
-# To run locally
+### To run locally
 
 LilyBin requires that NodeJS and MongoDB be installed on the server to run.
 
