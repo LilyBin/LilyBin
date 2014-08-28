@@ -1,1 +1,6 @@
 node_modules
+render/*.midi
+render/*.ly
+render/*.pdf
+render/*.png
+render/*.ps
