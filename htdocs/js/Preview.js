@@ -89,7 +89,7 @@ define([
 	Preview.prototype.handleResponse = function(data) {
 		var _this = this;
 		if (data.error) {
-			this.error.show().find('.message').text(data.error.message);
+			this.error.show().find('.message').text(data.error);
 			return false;
 		}
 		this.cacheBuster = '&t=' + new Date().getTime();
