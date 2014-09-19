@@ -169,7 +169,7 @@ db.connect(mongo, function(db) {
 			exec(config.bin[version] + ' --formats=pdf,png -o ' + __dirname + '/render/' + id + ' ' + tempSrc, function(err, stdout, stderr) {
 				if (err) {
 					res.send({
-						error: err,
+						error: stderr,
 						id: id,
 						pages: 0
 					});
