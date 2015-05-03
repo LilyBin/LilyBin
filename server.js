@@ -11,7 +11,7 @@ var express = require('express'),
 	fs = require('fs'),
 	path = require('path'),
 	_ = require('underscore'),
-	db = require('./app_modules/db'),
+	db = require('./lib/db'),
 	DropboxClient = require('dropbox'),
 	OAuth = require('oauth').OAuth;
 	
