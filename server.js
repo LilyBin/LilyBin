@@ -257,7 +257,7 @@ db.connect(mongo, function(db) {
 			if (!score) return next();
 			score.id = id;
 			score.revision = revision;
-			res.render('index.html', {score: JSON.stringify(score), accountInfo: req.session.accountInfo || 'null', versions: versions});
+			res.render('index.html', {score: JSON.stringify(score), accountInfo: req.session && req.session.accountInfo || 'null', versions: versions});
 
 			//db.log({action: 'page view', ip: ipAddr(req), id: id, revision: revision});
 		});
