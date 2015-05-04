@@ -28,7 +28,7 @@ app.use('/js/', express.static(__dirname + '/node_modules/requirejs'));
 app.use('/js/CodeMirror/', express.static(__dirname + '/node_modules/codemirror'));
 app.use(express.bodyParser());
 app.use(express.cookieParser());
-app.use(express.session({store: sessionStore, secret: '3891jasl', cookie: {path: '/', httpOnly: true, maxAge: 2592000000}}));
+// app.use(express.session({store: sessionStore, secret: '3891jasl', cookie: {path: '/', httpOnly: true, maxAge: 2592000000}}));
 
 // Use underscore.js for templating.
 app.register('.html', {
@@ -58,6 +58,7 @@ app.set('views', __dirname + '/views');
 
 db.connect(mongo, function(db) {
 
+/*
 	app.get('/dropbox_logout', function(req, res) {
 		delete dropboxClients[req.session.uid];
 		req.session.destroy(function(err) {
@@ -140,6 +141,7 @@ db.connect(mongo, function(db) {
 			res.send(response, response.statusCode);
 		});
 	});
+*/
 
 	// Routes
 	app.get('/js/*', function(req, res, next) {
