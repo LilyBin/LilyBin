@@ -1,18 +1,24 @@
-// Load Express
-var express = require('express'),
-	Db = require('mongodb').Db,
+// Misc
+var fs = require('fs'),
+	path = require('path'),
+	exec = require('child_process').exec,
+	_ = require('underscore');
+
+// DB
+var Db = require('mongodb').Db,
 	Connection = require('mongodb').Connection,
 	Server = require('mongodb').Server,
 	mongo = new Db('LilyPond', new Server('localhost', Connection.DEFAULT_PORT, {}), {}),
-	app = express.createServer(),
 	MongoStore = require('connect-mongodb'),
 	sessionStore = new MongoStore({db: mongo}),
-	exec = require('child_process').exec,
-	fs = require('fs'),
-	path = require('path'),
-	_ = require('underscore'),
-	db = require('./app_modules/db'),
-	DropboxClient = require('dropbox'),
+	db = require('./lib/db');
+
+// Express
+var express = require('express'),
+	app = express.createServer();
+
+// Dropbox
+var DropboxClient = require('dropbox'),
 	OAuth = require('oauth').OAuth;
 	
 // Serve static files from ./htdocs
