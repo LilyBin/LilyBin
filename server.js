@@ -16,7 +16,7 @@ var Db = require('mongodb').Db,
 
 // Express
 var express = require('express'),
-	app = express.createServer();
+	app = express();
 
 // Dropbox
 var DropboxClient = require('dropbox'),
@@ -26,19 +26,39 @@ var DropboxClient = require('dropbox'),
 app.use(express.static(__dirname + '/htdocs'));
 app.use('/js/', express.static(__dirname + '/node_modules/requirejs'));
 app.use('/js/CodeMirror/', express.static(__dirname + '/node_modules/codemirror'));
-app.use(express.bodyParser());
-app.use(express.cookieParser());
-// app.use(express.session({store: sessionStore, secret: '3891jasl', cookie: {path: '/', httpOnly: true, maxAge: 2592000000}}));
+// We don't need the extended features right now.
+app.use(require('body-parser').urlencoded({extended: false}));
+app.use(require('cookie-parser')());
+//app.use(require('express-session')({store: sessionStore, secret: '3891jasl', cookie: {path: '/', httpOnly: true, maxAge: 2592000000}}));
 
 // Use underscore.js for templating.
-app.register('.html', {
-	compile: function(str, options) {
-		var template = _.template(str);
-		return function (locals) {
-			return template(locals);
-		};
+var cache = {};
+app.engine('html', function (path, options, callback) {
+	var str;
+
+	if (cache[path]) {
+		try {
+			str = cache[path](options);
+		} catch (e) {
+			return callback(e);
+		}
+		return callback(null, str);
 	}
+
+	fs.readFile(path, function (e, content) {
+		if (e) return callback(e);
+		str = content.toString();
+		try {
+			cache[path] = _.template(str);
+			str = cache[path](options);
+		} catch (e) {
+			return callback(e);
+		}
+		return callback(null, str);
+	});
 });
+app.set('views', __dirname + '/views');
+app.set('view engine', 'html');
 
 
 // Dropbox
@@ -49,12 +69,6 @@ var consumerKey = process.env.DBOX_KEY,
 // Get config options
 var config = require('./config.json'),
 	versions = {};
-
-app.set('view options', {
-	layout: false
-});
-
-app.set('views', __dirname + '/views');
 
 db.connect(mongo, function(db) {
 
@@ -227,16 +241,16 @@ db.connect(mongo, function(db) {
 	});
 
 	app.get('/preview', function(req, res) {
-		var id = req.param('id'),
-			page = req.param('page') || 1;
+		var id = req.query.id,
+			page = req.query.page || 1;
 		
-		res.sendfile(__dirname + '/render/' + id + '-page' + page + '.png');
+		res.sendFile(__dirname + '/render/' + id + '-page' + page + '.png');
 
 		//db.log({action: 'preview', ip: ipAddr(req), id: id, page: page});
 	});
 
 	app.get('/downloadPDF', function(req, res) {
-		var id = req.param('id');
+		var id = req.query.id;
 		
 		res.download(__dirname + '/render/' + id + '.pdf', 'score.pdf');
 
@@ -244,7 +258,7 @@ db.connect(mongo, function(db) {
 	});
 	
 	app.get('/downloadMidi', function(req, res) {
-		var id = req.param('id');
+		var id = req.query.id;
 		
 		res.download(__dirname + '/render/' + id + '.midi', 'score.midi');
 
@@ -252,8 +266,8 @@ db.connect(mongo, function(db) {
 	});
 	
 	app.get('/:id?/:revision?', function(req, res, next) {
-		var id = req.param('id'),
-			revision = req.param('revision') || 1;
+		var id = req.params.id,
+			revision = req.params.revision || 1;
 	
 		db.scores.get({id: id || 'default', revision: revision}, function(err, score) {
 			if (!score) return next();
