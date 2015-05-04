@@ -158,18 +158,6 @@ db.connect(mongo, function(db) {
 */
 
 	// Routes
-	app.get('/js/*', function(req, res, next) {
-		next();
-	});
-	
-	app.get('/css/*', function(req, res, next) {
-		next();
-	});
-	
-	app.get('/favicon.ico', function(req, res, next) {
-		next();
-	});
-	
 	app.post('/save', function(req, res) {
 		var code = req.body.code,
 			id = req.body.id || Math.random().toString(36).substring(2, 8),
