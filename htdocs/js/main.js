@@ -32,12 +32,8 @@ require(['jquery', 'Preview', 'Editor', 'DropboxBrowser', 'underscore', 'order!/
 		var editor = new Editor($('#code_container'), {
 			showTabs: !!accountInfo
 		});
-		editor.event.bind('editor:preview', function(e, code) {
-			loadPreview();
-		});
-		editor.event.bind('editor:save', function(e, code) {
-			save();
-		});
+		editor.event.bind({ 'editor:preview': loadPreview,
+		                    'editor:save'   : save });
 		
 		// Logged in to Dropbox
 		if (accountInfo) {

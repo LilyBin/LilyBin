@@ -300,7 +300,8 @@ input[type="radio"]:checked + span::before {
 	background-color: #DDD;
 	width: 100%;
 }
-.preview_controls button {
+.preview_controls button,
+.preview_controls a.btn {
 	background-color: #F3F3F3;
 	border: 1px solid #BBB;
 	color: #333;
@@ -309,11 +310,14 @@ input[type="radio"]:checked + span::before {
 	font-family: 'Open Sans', sans-serif;
 	border-radius: 4px;
 	margin-right: 2px;
+	text-decoration: none;
 }
-.preview_controls button:hover {
+.preview_controls button:hover,
+.preview_controls a.btn:hover {
 	background-color: #F7F7F7;
 }
-.preview_controls button:disabled {
+.preview_controls button:disabled,
+.preview_controls a.btn.btn-disabled {
 	color: #999;
 	border: 1px solid #DDD;
 }

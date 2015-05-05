@@ -32,13 +32,8 @@ define([
 		this.fitWidthButton = $('<button></button>').text('Fit Width').click(function() {
 			_this.fit(true);
 		});
-		this.downloadPDFButton = $('<button></button>').text('Download PDF').click(function() {
-			//window.location = '/downloadPDF?id=' + _this.id;
-			$('<iframe />').css('display', 'none').appendTo('body').attr('src', '/downloadPDF?id=' + _this.id);
-		});
-		this.downloadMidiButton = $('<button></button>').text('Download Midi').click(function() {
-			$('<iframe />').css('display', 'none').appendTo('body').attr('src', '/downloadMidi?id=' + _this.id);
-		});
+		this.downloadPDFButton = $('<a href="/downloadPDF?id=' + _this.id + '" class="btn" target="_blank">Download PDF</a>')
+		this.downloadPDFButton = $('<a href="/downloadMidi?id=' + _this.id + '" class="btn" target="_blank">Download MIDI</a>')
 	
 		this.spinner = $('<div />').css({position: 'absolute', width: '100%', height: '100%'}).spinner({ colour: '100,100,100' }).hide();
 	
