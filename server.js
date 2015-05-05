@@ -185,25 +185,34 @@ db.connect(mongo, function(db) {
 				}
 				fs.stat(__dirname + '/render/' + id + '.png', function(err, stats) {
 					if (!err && stats) {
-						fs.renameSync(__dirname + '/render/' + id + '.png', __dirname + '/render/' + id + '-page1' + '.png');
-						res.send({
-							output: stderr,
-							id: id,
-							pages: 1
-						});
+						fs.rename(__dirname + '/render/' + id + '.png', __dirname + '/render/' + id + '-page1' + '.png', function (err) {
+							if (err) {
+								res.status(500).send('Internal server error: file rename failed');
+								console.error(err);
+								return;
+							}
+							res.send({
+								output: stderr,
+								id: id,
+								pages: 1
+							});
 
-						//db.log({action: 'prepare preview', ip: ipAddr(req), id: id, version: version, pages: 1, duration: new Date().getTime() - start});
+							//db.log({action: 'prepare preview', ip: ipAddr(req), id: id, version: version, pages: 1, duration: new Date().getTime() - start});
+						})
 					}
 					else {
-						var pages = 0, stats;
-						try { while (stats = fs.statSync(__dirname + '/render/' + id + '-page' + ++pages + '.png')); }
-						catch (e) { }
-						res.send({
-							output: stderr,
-							id: id,
-							pages: pages - 1
-						});
-	
+						function recurseStat(page) {
+							fs.stat(__dirname + '/render/' + id + '-page' + page + '.png', function (err, stats) {
+								if (!err) return recurseStat(++page);
+								res.send({
+									output: stderr,
+									id: id,
+									pages: page - 1
+								});
+							});
+						}
+						recurseStat(1);
+
 						//db.log({action: 'prepare preview', ip: ipAddr(req), id: id, version: version, pages: pages - 1, duration: new Date().getTime() - start});
 					}
 				});
