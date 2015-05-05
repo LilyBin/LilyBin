@@ -64,16 +64,24 @@ require('mongodb').MongoClient.connect(url, function (err, mongo) {
 	// who cares.
 	if (err) throw err;
 
-	var /*
-		MongoStore = require('connect-mongodb'),
+	var session = require('express-session'),
+		MongoStore = require('connect-mongo')(session),
 		sessionStore = new MongoStore({db: mongo}),
-		 */
 		dbConnect = require('./lib/db'),
 		db = dbConnect(mongo);
 
-	//app.use(require('express-session')({store: sessionStore, secret: '3891jasl', cookie: {path: '/', httpOnly: true, maxAge: 2592000000}}));
+	app.use(session({
+		store: sessionStore,
+		resave: false,
+		saveUninitialized: true,
+		secret: '3891jasl',
+		cookie: {
+			path: '/',
+			httpOnly: true,
+			maxAge: 2592000000
+		}
+	}));
 
-/*
 	app.get('/dropbox_logout', function(req, res) {
 		delete dropboxClients[req.session.uid];
 		req.session.destroy(function(err) {
@@ -156,7 +164,6 @@ require('mongodb').MongoClient.connect(url, function (err, mongo) {
 			res.send(response, response.statusCode);
 		});
 	});
-*/
 
 	// Routes
 	app.post('/save', function(req, res) {
