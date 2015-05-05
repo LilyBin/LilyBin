@@ -3,9 +3,6 @@ LilyBin
 
 LiliyBin is a web-based [LilyPond](http://www.lilypond.org) editor. See it live at [http://lilybin.com](http://lilybin.com).
 
-Feel free to help me clean up the messy code I produced in my early NodeJS days. I hope to be able to rewrite
-LilyBin someday soon, probably in Go.
-
 Submit bugs and feature requests as GitHub issues.
 
 ### To run locally
