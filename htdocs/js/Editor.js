@@ -1,6 +1,7 @@
 define([
-	'jquery'
-], function($) {
+	'jquery',
+	'CodeMirror/lib/codemirror'
+], function($, CodeMirror) {
 	function Editor(container, options) {
 		this.event = $({});
 		
@@ -86,7 +87,7 @@ define([
 			).data({tabBody: codemirrorContainer, path: path, codemirrorInstance: codemirrorInstance})
 		);
 		
-		codemirrorContainer.find('.CodeMirror-scroll').css({height: $(window).height() - $('#header').outerHeight() - $('#code_container').find('.tab_bar').outerHeight() + 'px'});
+		codemirrorContainer.find('.CodeMirror').css({height: $(window).height() - $('#header').outerHeight() - $('#code_container').find('.tab_bar').outerHeight() + 'px'});
 		if (loadPreview) this.loadPreview();
 	}
 	Editor.prototype.getValue = function() {

@@ -4,7 +4,7 @@ require.config({
 	}
 });
 
-require(['jquery', 'Preview', 'Editor', 'DropboxBrowser', 'underscore', 'order!/js/CodeMirror-2.21/lib/codemirror.js', 'order!/js/CodeMirror-2.21/mode/stex/stex.js', 'plugins/splitter', 'plugins/tipTip'], function($, Preview, Editor, DropboxBrowser) {
+require(['jquery', 'Preview', 'Editor', 'DropboxBrowser', 'underscore', 'CodeMirror/lib/codemirror', 'CodeMirror/mode/stex/stex', 'CodeMirror/addon/edit/matchbrackets', 'plugins/splitter', 'plugins/tipTip'], function($, Preview, Editor, DropboxBrowser) {
 	$(function() {
 		function loadPreview() {
 			preview.load({code: editor.getValue(), version: $('#version_select_menu input[name=version]:checked').val()});
@@ -55,7 +55,8 @@ require(['jquery', 'Preview', 'Editor', 'DropboxBrowser', 'underscore', 'order!/
 			fbWidth = $('#file_browser:visible').outerWidth() ? $('#file_browser:visible').outerWidth() : 0;
 				
 		$('#main').css({height: mainHeight + 'px', width: $(window).width()});
-		$('.CodeMirror-scroll').css({height: mainHeight - tabUlHeight + 'px'});
+		$('.CodeMirror').css({height: mainHeight - tabUlHeight + 'px'});
+		$('.CodeMirror-gutters').css({height: mainHeight - tabUlHeight + 'px'});
 		$('#preview_container').css({height: mainHeight + 'px'});
 		$('#code_container').css({width: $('#code_container').parent().width() - fbWidth + 'px', left: fbWidth + 'px'});
 		$('#donate_button_label').css({width: $('#header').width() - $('donate_button_label').outerWidth() - $('#header h1').outerWidth() - $('#actions').outerWidth() - 200 + 'px'});
@@ -67,7 +68,8 @@ require(['jquery', 'Preview', 'Editor', 'DropboxBrowser', 'underscore', 'order!/
 			$('#preview_container').css({width: $('#main').width() - $('#left_pane').width() - $('.vsplitbar').width()});
 			$('#code_container').css({width: $('#code_container').parent().width() - fbWidth + 'px', left: fbWidth + 'px'});
 			$('#preview_container, .vsplitbar, #main, #left_pane').css({height: mainHeight + 'px'});
-			$('.CodeMirror-scroll').css({height: mainHeight - tabUlHeight + 'px'});
+			$('.CodeMirror').css({height: mainHeight - tabUlHeight + 'px'});
+			$('.CodeMirror-gutters').css({height: mainHeight - tabUlHeight + 'px'});
 			$('#donate_button_label').css({width: $('#header').width() - $('donate_button_label').outerWidth() - $('#header h1').outerWidth() - $('#actions').outerWidth() - 200 + 'px'});
 		});
 
