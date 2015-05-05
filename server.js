@@ -5,21 +5,15 @@ var fs = require('fs'),
 	execSync = require('sync-exec'),
 	_ = require('underscore');
 
-// DB
-var Db = require('mongodb').Db,
-	Connection = require('mongodb').Connection,
-	Server = require('mongodb').Server,
-	mongo = new Db('LilyPond', new Server('localhost', Connection.DEFAULT_PORT, {}), {}),
-	MongoStore = require('connect-mongodb'),
-	sessionStore = new MongoStore({db: mongo}),
-	dbConnect = require('./lib/db');
-
 // Express
 var express = require('express'),
 	app = express();
 
 // Dropbox
-var DropboxClient = require('dropbox');
+var DropboxClient = require('dropbox'),
+	consumerKey = process.env.DBOX_KEY,
+	consumerSecret = process.env.DBOX_SECRET,
+	dropboxClients = {};
 	
 // Serve static files from ./htdocs
 app.use(express.static(__dirname + '/htdocs'));
@@ -28,7 +22,6 @@ app.use('/js/CodeMirror/', express.static(__dirname + '/node_modules/codemirror'
 // We don't need the extended features right now.
 app.use(require('body-parser').urlencoded({extended: false}));
 app.use(require('cookie-parser')());
-//app.use(require('express-session')({store: sessionStore, secret: '3891jasl', cookie: {path: '/', httpOnly: true, maxAge: 2592000000}}));
 
 // Use underscore.js for templating.
 var cache = {};
@@ -59,20 +52,26 @@ app.engine('html', function (path, options, callback) {
 app.set('views', __dirname + '/views');
 app.set('view engine', 'html');
 
-
-// Dropbox
-var consumerKey = process.env.DBOX_KEY,
-	consumerSecret = process.env.DBOX_SECRET,
-	dropboxClients = {};
-
 // Get config options
 var config = require('./config.json'),
 	versions = {};
 
-dbConnect(mongo, function(err, db) {
+// DB
+var url = 'mongodb://localhost:27017/LilyPond';
+
+require('mongodb').MongoClient.connect(url, function (err, mongo) {
 	// Throwing error from an async callback is bad, but this is fatal so
 	// who cares.
 	if (err) throw err;
+
+	var /*
+		MongoStore = require('connect-mongodb'),
+		sessionStore = new MongoStore({db: mongo}),
+		 */
+		dbConnect = require('./lib/db'),
+		db = dbConnect(mongo);
+
+	//app.use(require('express-session')({store: sessionStore, secret: '3891jasl', cookie: {path: '/', httpOnly: true, maxAge: 2592000000}}));
 
 /*
 	app.get('/dropbox_logout', function(req, res) {
