@@ -69,7 +69,10 @@ var consumerKey = process.env.DBOX_KEY,
 var config = require('./config.json'),
 	versions = {};
 
-dbConnect(mongo, function(db) {
+dbConnect(mongo, function(err, db) {
+	// Throwing error from an async callback is bad, but this is fatal so
+	// who cares.
+	if (err) throw err;
 
 /*
 	app.get('/dropbox_logout', function(req, res) {
@@ -268,7 +271,11 @@ dbConnect(mongo, function(db) {
 
 	app.get('/install', function(req, res) {
 		db.scores.save({id: 'default', code: '', version: '1'}, function(err, revision) {
-			res.send({id: 'default', revision: '1'});
+			if (err) {
+				console.error(err);
+				return res.status(500).send('Something went wrong! Check CLI output.');
+			}
+			res.send('LilyBin successfully installed');
 		});
 	});
 
