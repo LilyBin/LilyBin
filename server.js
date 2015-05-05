@@ -2,6 +2,7 @@
 var fs = require('fs'),
 	path = require('path'),
 	exec = require('child_process').exec,
+	execSync = require('sync-exec'),
 	_ = require('underscore');
 
 // DB
@@ -46,7 +47,8 @@ var consumerKey = process.env.DBOX_KEY,
 	dropboxClients = {};
 
 // Get config options
-var config = JSON.parse(fs.readFileSync(__dirname + '/config.json', 'utf-8'));
+var config = JSON.parse(fs.readFileSync(__dirname + '/config.json', 'utf-8')),
+	versions = {};
 
 app.set('view options', {
 	layout: false
@@ -255,7 +257,7 @@ db.connect(mongo, function(db) {
 			if (!score) return next();
 			score.id = id;
 			score.revision = revision;
-			res.render('index.html', {score: JSON.stringify(score), accountInfo: req.session.accountInfo || 'null'});
+			res.render('index.html', {score: JSON.stringify(score), accountInfo: req.session.accountInfo || 'null', versions: versions});
 
 			//db.log({action: 'page view', ip: ipAddr(req), id: id, revision: revision});
 		});
@@ -268,6 +270,17 @@ db.connect(mongo, function(db) {
 	});
 
 });
+
+var bins = Object.keys(config.bin)
+for (var i = 0; i < bins.length; i++) {
+	var out = execSync(config.bin[bins[i]] + ' -v');
+	if (out.status !== 0) {
+		console.error(config.bin[bins[i]] + ' -v:');
+		console.error(out);
+		throw new Error('LilyPond installation broken');
+	}
+	versions[bins[i]] = out.stdout.match(/^GNU LilyPond (.*)$/m)[1];
+}
 
 var port;
 app.listen(port = process.env.LISTEN_PORT || 3001);
