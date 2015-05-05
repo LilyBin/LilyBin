@@ -23,6 +23,8 @@ var DropboxClient = require('dropbox'),
 	
 // Serve static files from ./htdocs
 app.use(express.static(__dirname + '/htdocs'));
+app.use('/js/', express.static(__dirname + '/node_modules/requirejs'));
+app.use('/js/CodeMirror/', express.static(__dirname + '/node_modules/codemirror'));
 app.use(express.bodyParser());
 app.use(express.cookieParser());
 app.use(express.session({store: sessionStore, secret: '3891jasl', cookie: {path: '/', httpOnly: true, maxAge: 2592000000}}));
