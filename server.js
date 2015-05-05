@@ -19,8 +19,7 @@ var express = require('express'),
 	app = express();
 
 // Dropbox
-var DropboxClient = require('dropbox'),
-	OAuth = require('oauth').OAuth;
+var DropboxClient = require('dropbox');
 	
 // Serve static files from ./htdocs
 app.use(express.static(__dirname + '/htdocs'));
