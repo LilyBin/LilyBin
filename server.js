@@ -12,7 +12,7 @@ var Db = require('mongodb').Db,
 	mongo = new Db('LilyPond', new Server('localhost', Connection.DEFAULT_PORT, {}), {}),
 	MongoStore = require('connect-mongodb'),
 	sessionStore = new MongoStore({db: mongo}),
-	db = require('./lib/db');
+	dbConnect = require('./lib/db');
 
 // Express
 var express = require('express'),
@@ -69,7 +69,7 @@ var consumerKey = process.env.DBOX_KEY,
 var config = require('./config.json'),
 	versions = {};
 
-db.connect(mongo, function(db) {
+dbConnect(mongo, function(db) {
 
 /*
 	app.get('/dropbox_logout', function(req, res) {
