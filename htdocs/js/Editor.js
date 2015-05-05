@@ -38,6 +38,9 @@ define([
 			lineNumbers: true,
 			fixedGutter: true,
 			matchBrackets: true,
+			indentUnit: 4,
+			tabSize: 4,
+			indentWithTabs: true,
 			extraKeys: {
 				'Ctrl-Enter': _.bind(this.loadPreview, this),
 				'Ctrl-S': _.bind(this.save, this)
