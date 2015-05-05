@@ -47,7 +47,7 @@ var consumerKey = process.env.DBOX_KEY,
 	dropboxClients = {};
 
 // Get config options
-var config = JSON.parse(fs.readFileSync(__dirname + '/config.json', 'utf-8')),
+var config = require('./config.json'),
 	versions = {};
 
 app.set('view options', {
