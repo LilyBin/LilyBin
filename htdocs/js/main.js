@@ -23,7 +23,7 @@ require(['jquery', 'Preview', 'Editor', 'DropboxBrowser', 'underscore', 'CodeMir
 					editor.reportSuccessfulSave(li)
 				});
 			} else {
-				$.post('/save', {code: editor.getValue(), id: score.id, version: $('#version_select_menu input[name=version]:checked').val()}, function(response) {
+				$.post('/save', {id: score.id, revision: parseInt(score.revision, 10)+1, code: editor.getValue(), version: $('#version_select_menu input[name=version]:checked').val()}, function(response) {
 					window.location = '/' + response.id + '/' + response.revision;
 				}, 'json');
 			}
