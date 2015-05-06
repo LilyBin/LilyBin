@@ -3,8 +3,8 @@
   <head>
     <title>LilyBin LilyPond Score Editor</title>
 	<meta charset="utf-8">
-	<meta property="og:title" content="LilyPond Score"> 
-	<meta property="og:description" content="LilyPond Score made using LilyBin."> 
+	<meta property="og:title" content="LilyPond Score">
+	<meta property="og:description" content="LilyPond Score made using LilyBin.">
     <script>var score = <%= score %>; accountInfo = <%= accountInfo %>;</script>
     <script data-main="/js/main" src="/js/require.js"></script>
     <link rel="stylesheet" href="/css/normalize.css">
@@ -12,22 +12,6 @@
     <link rel="stylesheet" href="/js/CodeMirror/lib/codemirror.css">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/tipTip.css">
-    
-	<script type="text/javascript">
-
-/*	  var _gaq = _gaq || [];
-	  _gaq.push(['_setAccount', 'UA-29060310-1']);
-	  _gaq.push(['_setDomainName', 'lilybin.com']);
-	  _gaq.push(['_setAllowLinker', true]);
-	  _gaq.push(['_trackPageview']);
-
-	  (function() {
-		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	  })();
-*/
-	</script>
   </head>
   <body>
   	<div id="header">
@@ -50,27 +34,8 @@
   			</ul>
   			<a class="button" id="" href="javascript:history.go(0)">Reset</a>
   			<button id="save_button" title="(Ctrl+S)">Save</button>
-  			<button id="share_button">Share&nbsp;&nbsp;&#9660;</button>
-  			<div id="share_menu">
-				<button class="close">×</button>
-				<label for="share_url">Direct URL</label>
-				<input id="share_url">
-				<br>
-				<button class="facebook_share_button">Share on Facebook</button>
-  			</div>
-
   			<a class="button" id="dropbox_login" href="/dropbox_login">Login to Dropbox</a>
   			<a class="button" id="dropbox_logout" href="/dropbox_logout">Logout of Dropbox</a>
-  			
-			<form id="donate_form" action="https://www.paypal.com/cgi-bin/webscr" method="post">
-				<input type="hidden" name="cmd" value="_s-xclick">
-				<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----">
-				
-				<label id="donate_button_label" for="donate_button">
-				<button id="donate_button" type="submit">Donate</button>
-				Support LilyBin development</label>
-				<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-			</form>
   		</div>
   	</div>
   	<div id="main">
