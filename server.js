@@ -284,7 +284,7 @@ for (var i = 0; i < bins.length; i++) {
 
 var port;
 app.listen(port = process.env.LISTEN_PORT || 3001);
-console.log("Listening on port " + port + ".");
+console.log('Listening on port ' + port + '.');
 
 function ipAddr(req) {
 	var ip = null;
