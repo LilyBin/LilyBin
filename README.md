@@ -7,11 +7,13 @@ Submit bugs and feature requests as GitHub issues.
 
 ### To run locally
 
-LilyBin requires that NodeJS and MongoDB be installed on the server to run.
+Install Node.js and LilyPond before running LilyBin.
 
-Clone the repository and run `npm install` to pull in required node modules.
+Clone the repository and run `npm install` to download required node modules.
 
 Next, edit config.json so that `bin.stable` is the path to the "stable" LilyPond binary,
-and `bin.unstable` is the path to the unstable binary. Ensure MongoDB is running locally, and launch LilyBin
-with `node server.js`. Navigate to http://localhost:3001/install, then http://localhost:3001, and you should
+and `bin.unstable` is the path to the unstable binary. Launch LilyBin
+with `node server.js`. Navigate to http://localhost:3001, and you should
 be presented with an editor pane and a successfully rendered score.
+
+Copyright Google
