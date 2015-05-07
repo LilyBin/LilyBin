@@ -16,12 +16,6 @@ app.use('/js/', express.static(__dirname + '/node_modules/underscore'));
 app.use('/js/CodeMirror/', express.static(__dirname + '/node_modules/codemirror'));
 // We don't need the extended features right now.
 app.use(require('body-parser').urlencoded({extended: false}));
-app.use(require('cookie-parser')());
-app.use(require('cookie-session')({
-	secret: process.env.SESSION_SECRET || 'secret',
-	maxAge: 2592000000,
-	path: '/'
-}));
 
 // Use underscore.js for templating.
 var cache = {};
