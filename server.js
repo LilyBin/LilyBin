@@ -1,5 +1,6 @@
 // Misc
-var fs = require('fs'),
+var Promise = require('bluebird'),
+	fs = Promise.promisifyAll(require('fs')),
 	path = require('path'),
 	exec = require('child_process').exec,
 	execSync = require('sync-exec'),
@@ -20,28 +21,17 @@ app.use(require('body-parser').urlencoded({extended: false}));
 // Use underscore.js for templating.
 var cache = {};
 app.engine('html', function (path, options, callback) {
-	var str;
-
 	if (cache[path]) {
-		try {
-			str = cache[path](options);
-		} catch (e) {
-			return callback(e);
-		}
-		return callback(null, str);
+		return Promise.resolve(options)
+			.then(cache[path])
+			.nodeify(callback);
 	}
 
-	fs.readFile(path, function (e, content) {
-		if (e) return callback(e);
-		str = content.toString();
-		try {
+	fs.readFileAsync(path, 'utf8')
+		.then(function (str) {
 			cache[path] = _.template(str);
-			str = cache[path](options);
-		} catch (e) {
-			return callback(e);
-		}
-		return callback(null, str);
-	});
+			return cache[path](options);
+		}).nodeify(callback);
 });
 app.set('views', __dirname + '/views');
 app.set('view engine', 'html');
