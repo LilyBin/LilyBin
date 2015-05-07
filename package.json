@@ -4,6 +4,7 @@
   "description": "Web-based LilyPond editor",
   "main": "server.js",
   "dependencies": {
+    "bluebird": "^2.9.25",
     "body-parser": "^1.12.3",
     "codemirror": "^5.2.0",
     "express": "^4.12.3",

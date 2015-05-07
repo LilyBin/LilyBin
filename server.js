@@ -60,12 +60,12 @@ app.post('/save', function(req, res) {
 		version = req.body.version || 'stable',
 		tempSrc = __dirname + '/src/' + id + '.ly';
 
-	db.scores.save(id+':'+revision, code, version, function(err) {
-		if (err) {
+	db.scores.save(id+':'+revision, code, version)
+		.then(function () {
+			res.send({id: id, revision: revision});
+		}).catch(function (err) {
 			return res.send(err, 500);
-		}
-		res.send({id: id, revision: revision});
-	});
+		});
 });
 
 app.post('/prepare_preview', function(req, res) {
@@ -154,13 +154,16 @@ app.get('/:id?/:revision?', function(req, res, next) {
 		});
 	}
 
-	db.scores.get(id+':'+revision, function(err, score) {
-		if (!score) return next();
-		score.id = id;
-		score.revision = revision;
-		res.render('index.html', {
-			score: JSON.stringify(score), versions: versions});
-	});
+	db.scores.get(id+':'+revision)
+		.then(function (score) {
+			if (!score) throw new Error('no score');
+			score.id = id;
+			score.revision = revision;
+			res.render('index.html', {
+				score: JSON.stringify(score), versions: versions});
+		}).catch(function(err) {
+			next();
+		})
 });
 
 var bins = Object.keys(config.bin)
