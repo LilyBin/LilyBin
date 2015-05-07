@@ -5,57 +5,69 @@ var fs = require('fs'),
 	execSync = require('sync-exec'),
 	_ = require('underscore');
 
-// DB
-var db = require('./lib/db');
-
 // Express
 var express = require('express'),
-	app = express.createServer();
+	app = express();
 
 // Dropbox
 var DropboxClient = require('dropbox'),
-	OAuth = require('oauth').OAuth;
+	consumerKey = process.env.DBOX_KEY,
+	consumerSecret = process.env.DBOX_SECRET,
+	dropboxClients = {};
 
 // Serve static files from ./htdocs
 app.use(express.static(__dirname + '/htdocs'));
 app.use('/js/', express.static(__dirname + '/node_modules/requirejs'));
 app.use('/js/CodeMirror/', express.static(__dirname + '/node_modules/codemirror'));
-app.use(express.bodyParser());
-app.use(express.cookieParser());
-// TODO: Use some other session store, ideally an encrypted cookie.
-app.use(express.session({store: new express.session.MemoryStore(), secret: '3891jasl', cookie: {path: '/', httpOnly: true, maxAge: 2592000000}}));
+// We don't need the extended features right now.
+app.use(require('body-parser').urlencoded({extended: false}));
+app.use(require('cookie-parser')());
+app.use(require('cookie-session')({
+	secret: process.env.SESSION_SECRET || 'secret',
+	maxAge: 2592000000,
+	path: '/'
+}));
 
 // Use underscore.js for templating.
-app.register('.html', {
-	compile: function(str, options) {
-		var template = _.template(str);
-		return function (locals) {
-			return template(locals);
-		};
+var cache = {};
+app.engine('html', function (path, options, callback) {
+	var str;
+
+	if (cache[path]) {
+		try {
+			str = cache[path](options);
+		} catch (e) {
+			return callback(e);
+		}
+		return callback(null, str);
 	}
+
+	fs.readFile(path, function (e, content) {
+		if (e) return callback(e);
+		str = content.toString();
+		try {
+			cache[path] = _.template(str);
+			str = cache[path](options);
+		} catch (e) {
+			return callback(e);
+		}
+		return callback(null, str);
+	});
 });
-
-
-// Dropbox
-var consumerKey = process.env.DBOX_KEY,
-	consumerSecret = process.env.DBOX_SECRET,
-	dropboxClients = {};
+app.set('views', __dirname + '/views');
+app.set('view engine', 'html');
 
 // Get config options
 var config = require('./config.json'),
 	versions = {};
 
-app.set('view options', {
-	layout: false
-});
-
-app.set('views', __dirname + '/views');
+// DB
+var db = require('./lib/db');
 
 app.get('/dropbox_logout', function(req, res) {
 	delete dropboxClients[req.session.uid];
-	req.session.destroy(function(err) {
-		res.redirect('/');
-	});
+	req.session = null;
+	res.redirect('/');
 });
 
 app.get('/dropbox_login', function(req, res) {
@@ -134,19 +146,6 @@ app.post('/dropbox_save', function(req, res) {
 	});
 });
 
-// Routes
-app.get('/js/*', function(req, res, next) {
-	next();
-});
-
-app.get('/css/*', function(req, res, next) {
-	next();
-});
-
-app.get('/favicon.ico', function(req, res, next) {
-	next();
-});
-
 app.post('/save', function(req, res) {
 	var code = req.body.code,
 		id = req.body.id || Math.random().toString(36).substring(2, 8),
@@ -214,27 +213,28 @@ app.post('/prepare_preview', function(req, res) {
 });
 
 app.get('/preview', function(req, res) {
-	var id = req.param('id'),
-		page = req.param('page') || 1;
+	var id = req.query.id,
+		page = req.query.page || 1;
 
-	res.sendfile('render/' + id + '-page' + page + '.png', {root: __dirname});
+	res.sendFile(__dirname + '/render/' + id + '-page' + page + '.png');
 });
 
+
 app.get('/downloadPDF', function(req, res) {
-	var id = req.param('id');
+	var id = req.query.id;
 
 	res.download(__dirname + '/render/' + id + '.pdf', 'score.pdf');
 });
 
 app.get('/downloadMidi', function(req, res) {
-	var id = req.param('id');
+	var id = req.query.id;
 
 	res.download(__dirname + '/render/' + id + '.midi', 'score.midi');
 });
 
 app.get('/:id?/:revision?', function(req, res, next) {
-	var id = req.param('id'),
-		revision = req.param('revision') || 1;
+	var id = req.params.id,
+		revision = req.params.revision || 1;
 
 	if (!id) {
 		return res.render('index.html', {
@@ -271,14 +271,3 @@ for (var i = 0; i < bins.length; i++) {
 var port;
 app.listen(port = process.env.LISTEN_PORT || 3001);
 console.log('Listening on port ' + port + '.');
-
-function ipAddr(req) {
-	var ip = null;
-	try {
-		ip = req.headers['x-forwarded-for'];
-	}
-	catch ( error ) {
-		ip = req.connection.remoteAddress;
-	}
-	return ip;
-}
