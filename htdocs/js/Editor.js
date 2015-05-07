@@ -1,7 +1,10 @@
 define([
 	'jquery',
-	'CodeMirror/lib/codemirror'
-], function($, CodeMirror) {
+	'underscore',
+	'CodeMirror/lib/codemirror',
+	'CodeMirror/mode/stex/stex',
+	'CodeMirror/addon/edit/matchbrackets'
+], function($, _, CodeMirror) {
 	function Editor(container, options) {
 		this.event = $({});
 		

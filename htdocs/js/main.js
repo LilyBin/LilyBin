@@ -4,7 +4,13 @@ require.config({
 	}
 });
 
-require(['jquery', 'Preview', 'Editor', 'underscore', 'CodeMirror/lib/codemirror', 'CodeMirror/mode/stex/stex', 'CodeMirror/addon/edit/matchbrackets', 'plugins/splitter', 'plugins/tipTip'], function($, Preview, Editor) {
+require([
+	'jquery',
+	'Preview',
+	'Editor',
+	'plugins/splitter',
+	'plugins/tipTip'
+], function($, Preview, Editor) {
 	$(function() {
 		function loadPreview() {
 			preview.load({code: editor.getValue(), version: $('#version_select_menu input[name=version]:checked').val()});
