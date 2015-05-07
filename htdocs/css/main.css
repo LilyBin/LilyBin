@@ -97,58 +97,6 @@ input[type="radio"]:checked + span::before {
 	background-color: #BBB;
 }
 #separator { position: absolute; top: 0; width: 2px; background-color: #888; }
-#file_browser {
-	width: 173px;
-	padding: 15px 2px 5px 8px;
-	background-color: #F3F3F3;
-	border-right: 5px solid #DDD;
-	height: 100%;
-	position: absolute;
-	top: 0;
-	left: 0;
-	font-size: 12px;
-	display: none;
-}
-#file_browser ul, li {
-	margin: 0 0 2px 0;
-	padding: 0;
-	list-style-type: none;
-}
-#file_browser ul button {
-	border: none;
-	background: none;
-}
-#file_browser ul button:hover {
-	text-decoration: underline;
-}
-#file_browser .new_file_button {
-	border: 1px solid #BBB;
-	border-radius: 4px;
-	background: #FFF url('/images/new_file.png') 5px center no-repeat;
-	margin-top: 10px;
-	padding: 4px 6px 4px 26px;
-}
-.folder_list li {
-	background: transparent url('/images/folder.png') top left no-repeat;
-	padding-left: 14px;
-}
-.folder_list li.level_up {
-	background-image: url('/images/level_up.png');
-	margin-bottom: 10px;
-}
-.file_list li {
-	background: transparent url('/images/file.png') top left no-repeat;
-	padding-left: 14px;
-}
-.file_list li.ly {
-	background-image: url('/images/ly.png');
-}
-.file_list input {
-	border: 1px solid #DDD;
-	margin-left: 4px;
-	width: 134px;
-	outline: none;
-}
 #code_container {
 	position: absolute;
 	top: 0;
@@ -156,55 +104,6 @@ input[type="radio"]:checked + span::before {
 	overflow: hidden;
 	width: 100%;
 
-}
-#code_container.show_tabs .tab_bar { display: block; }
-.tab_bar {
-	margin: 0;
-	padding: 0 0 0 30px;
-	width: 100%;
-	background-color: #DDD;
-	display: none;
-	border-bottom: 1px solid #DDD;
-	white-space: nowrap;
-}
-.tab_bar li {
-	display: inline-block;
-	margin: 8px 0 -1px 1px;
-	border-bottom: 1px solid #DDD;
-	position: relative;
-}
-.tab_bar button.tab {
-	background-color: #F3F3F3;
-	border: 1px solid #BBB;
-	border-bottom: none;
-	border-radius: 8px 8px 0 0;
-	color: #333;
-	font-size: 14px;
-	padding: 6px 20px 6px 12px;
-}
-.tab_bar .unsaved_changes_indicator {
-	display: none;
-}
-.tab_bar li.unsaved_changes .unsaved_changes_indicator {
-	display: inline;
-}
-.tab_bar li .close_button {
-	position: absolute;
-	top: 5px;
-	right: 0;
-	background: none;
-	border: none;
-	color: #CCC;
-}
-.tab_bar li .close_button:hover {
-	color: #333;
-}
-.tab_bar li.selected {
-}
-.tab_bar li.selected button.tab {
-	background-color: #FFF;
-	border-bottom: 1px solid #FFF;
-	margin-bottom: -1px;
 }
 #preview_container {
 	position: absolute;

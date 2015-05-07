@@ -9,12 +9,6 @@ var fs = require('fs'),
 var express = require('express'),
 	app = express();
 
-// Dropbox
-var DropboxClient = require('dropbox'),
-	consumerKey = process.env.DBOX_KEY,
-	consumerSecret = process.env.DBOX_SECRET,
-	dropboxClients = {};
-
 // Serve static files from ./htdocs
 app.use(express.static(__dirname + '/htdocs'));
 app.use('/js/', express.static(__dirname + '/node_modules/requirejs'));
@@ -63,88 +57,6 @@ var config = require('./config.json'),
 
 // DB
 var db = require('./lib/db');
-
-app.get('/dropbox_logout', function(req, res) {
-	delete dropboxClients[req.session.uid];
-	req.session = null;
-	res.redirect('/');
-});
-
-app.get('/dropbox_login', function(req, res) {
-	var dropbox = dropboxClients[req.sessionID] = new DropboxClient({
-		consumerKey: consumerKey,
-		consumerSecret: consumerSecret,
-		sandbox: true
-	});
-
-	dropbox.getRequestToken(function(err, requestToken, requestTokenSecret) {
-		if (err) console.log('error', err);
-		else {
-			res.redirect('https://www.dropbox.com/1/oauth/authorize?oauth_token=' + requestToken + '&oauth_callback=http://' + req.headers.host + '/get_dropbox_access');
-		}
-	});
-});
-
-app.get('/get_dropbox_access', function(req, res) {
-	var dropbox = dropboxClients[req.sessionID];
-
-	dropbox.getAccessToken(function(err, accessToken, accessTokenSecret, results) {
-		delete dropboxClients[req.sessionID];
-
-		req.session.uid = results.uid;
-		req.session.accessToken = accessToken;
-		req.session.accessTokenSecret = accessTokenSecret;
-
-		dropboxClients[results.uid] = dropbox;
-
-		dropbox.getAccountInfo(function(err, info) {
-			req.session.accountInfo = info;
-			res.redirect('/');
-		});
-	});
-})
-
-app.get('/dropbox_metadata', function(req, res) {
-	var dropbox = dropboxClients[req.session.uid] || (dropboxClients[req.session.uid] = new DropboxClient({
-		consumerKey: consumerKey,
-		consumerSecret: consumerSecret,
-		accessToken: req.session.accessToken,
-		accessTokenSecret: req.session.accessTokenSecret,
-		sandbox: true
-	}));
-
-	dropbox.getMetadata(req.query.path || '/', {}, function(err, response) {
-		res.send(response);
-	});
-});
-
-app.get('/dropbox_file', function(req, res) {
-	var dropbox = dropboxClients[req.session.uid] || (dropboxClients[req.session.uid] = new DropboxClient({
-		consumerKey: consumerKey,
-		consumerSecret: consumerSecret,
-		accessToken: req.session.accessToken,
-		accessTokenSecret: req.session.accessTokenSecret,
-		sandbox: true
-	}));
-
-	dropbox.getFile(req.query.path, {}, function(err, body, response) {
-		res.send(body, response.statusCode);
-	});
-});
-
-app.post('/dropbox_save', function(req, res) {
-	var dropbox = dropboxClients[req.session.uid] || (dropboxClients[req.session.uid] = new DropboxClient({
-		consumerKey: consumerKey,
-		consumerSecret: consumerSecret,
-		accessToken: req.session.accessToken,
-		accessTokenSecret: req.session.accessTokenSecret,
-		sandbox: true
-	}));
-
-	dropbox.putFile(req.body.path, req.body.contents, 'text/lilypond', function(err, response) {
-		res.send(response, response.statusCode);
-	});
-});
 
 app.post('/save', function(req, res) {
 	var code = req.body.code,
@@ -243,7 +155,6 @@ app.get('/:id?/:revision?', function(req, res, next) {
 				revision: '0',
 				code: '% LilyBin\n{\n  c\'\n}',
 			}),
-			accountInfo: req.session.accountInfo || 'null',
 			versions: versions,
 		});
 	}
@@ -253,7 +164,7 @@ app.get('/:id?/:revision?', function(req, res, next) {
 		score.id = id;
 		score.revision = revision;
 		res.render('index.html', {
-			score: JSON.stringify(score), accountInfo: req.session.accountInfo || 'null', versions: versions});
+			score: JSON.stringify(score), versions: versions});
 	});
 });
 

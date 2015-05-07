@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<meta property="og:title" content="LilyPond Score">
 	<meta property="og:description" content="LilyPond Score made using LilyBin.">
-    <script>var score = <%= score %>; accountInfo = <%= accountInfo %>;</script>
+    <script>var score = <%= score %>;</script>
     <script data-main="/js/main" src="/js/require.js"></script>
     <link rel="stylesheet" href="/css/normalize.css">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,800">
@@ -34,13 +34,14 @@
   			</ul>
   			<a class="button" id="" href="javascript:history.go(0)">Reset</a>
   			<button id="save_button" title="(Ctrl+S)">Save</button>
+			<!--
   			<a class="button" id="dropbox_login" href="/dropbox_login">Login to Dropbox</a>
   			<a class="button" id="dropbox_logout" href="/dropbox_logout">Logout of Dropbox</a>
+			-->
   		</div>
   	</div>
   	<div id="main">
   		<div id="left_pane">
-  			<div id="file_browser"></div>
 			<div id="code_container"></div>
   		</div>
 		<div id="preview_container">

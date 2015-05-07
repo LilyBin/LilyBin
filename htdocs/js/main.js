@@ -4,72 +4,41 @@ require.config({
 	}
 });
 
-require(['jquery', 'Preview', 'Editor', 'DropboxBrowser', 'underscore', 'CodeMirror/lib/codemirror', 'CodeMirror/mode/stex/stex', 'CodeMirror/addon/edit/matchbrackets', 'plugins/splitter', 'plugins/tipTip'], function($, Preview, Editor, DropboxBrowser) {
+require(['jquery', 'Preview', 'Editor', 'underscore', 'CodeMirror/lib/codemirror', 'CodeMirror/mode/stex/stex', 'CodeMirror/addon/edit/matchbrackets', 'plugins/splitter', 'plugins/tipTip'], function($, Preview, Editor) {
 	$(function() {
 		function loadPreview() {
 			preview.load({code: editor.getValue(), version: $('#version_select_menu input[name=version]:checked').val()});
 		}
 
 		function save() {
-			if (accountInfo) {
-				var path = editor.getPath(),
-					li = editor.getCurrentTab();
-			
-				$.post('/dropbox_save', {
-					path: path,
-					contents: editor.getValue(),
-					version: $('#version_select_menu input[name=version]:checked').val()
-				}, function(response, status) {
-					editor.reportSuccessfulSave(li)
-				});
-			} else {
-				$.post('/save', {id: score.id, revision: parseInt(score.revision, 10)+1, code: editor.getValue(), version: $('#version_select_menu input[name=version]:checked').val()}, function(response) {
-					window.location = '/' + response.id + '/' + response.revision;
-				}, 'json');
-			}
+			$.post('/save', {id: score.id, revision: parseInt(score.revision, 10)+1, code: editor.getValue(), version: $('#version_select_menu input[name=version]:checked').val()}, function(response) {
+				window.location = '/' + response.id + '/' + response.revision;
+			}, 'json');
 		}
 
-		var editor = new Editor($('#code_container'), {
-			showTabs: !!accountInfo
-		});
+		var editor = new Editor($('#code_container'));
 		editor.event.bind({ 'editor:preview': loadPreview,
 		                    'editor:save'   : save });
 		
-		// Logged in to Dropbox
-		if (accountInfo) {
-			$('#dropbox_login').hide();
-			$('#dropbox_logout').show();
-			
-			var dropboxBrowser = new DropboxBrowser($('#file_browser'), {
-				editor: editor
-			});
-			$('#file_browser').show();
-		} else { // Not logged in
-			editor.openFile('', score.code);
-			$('#dropbox_logout').hide();
-			$('#dropbox_login').show();
-		}
+		editor.openFile('', score.code);
 
-		var mainHeight = $(window).height() - $('#header').outerHeight(),
-			tabUlHeight = $('#code_container').find('.tab_bar:visible').outerHeight(),
-			fbWidth = $('#file_browser:visible').outerWidth() ? $('#file_browser:visible').outerWidth() : 0;
+		var mainHeight = $(window).height() - $('#header').outerHeight();
 				
 		$('#main').css({height: mainHeight + 'px', width: $(window).width()});
-		$('.CodeMirror').css({height: mainHeight - tabUlHeight + 'px'});
-		$('.CodeMirror-gutters').css({height: mainHeight - tabUlHeight + 'px'});
+		$('.CodeMirror').css({height: mainHeight + 'px'});
+		$('.CodeMirror-gutters').css({height: mainHeight + 'px'});
 		$('#preview_container').css({height: mainHeight + 'px'});
-		$('#code_container').css({width: $('#code_container').parent().width() - fbWidth + 'px', left: fbWidth + 'px'});
+		$('#code_container').css({width: $('#code_container').parent().width() + 'px', left: '0px'});
 		$('#donate_button_label').css({width: $('#header').width() - $('donate_button_label').outerWidth() - $('#header h1').outerWidth() - $('#actions').outerWidth() - 200 + 'px'});
 		$(window).resize(function() {
-			var mainHeight = $(window).height() - $('#header').outerHeight(),
-				fbWidth = $('#file_browser:visible').outerWidth() ? $('#file_browser:visible').outerWidth() : 0;
+			var mainHeight = $(window).height() - $('#header').outerHeight();
 
 			$('#main').css({width: $(window).width()});
 			$('#preview_container').css({width: $('#main').width() - $('#left_pane').width() - $('.vsplitbar').width()});
-			$('#code_container').css({width: $('#code_container').parent().width() - fbWidth + 'px', left: fbWidth + 'px'});
+			$('#code_container').css({width: $('#code_container').parent().width() + 'px', left: '0px'});
 			$('#preview_container, .vsplitbar, #main, #left_pane').css({height: mainHeight + 'px'});
-			$('.CodeMirror').css({height: mainHeight - tabUlHeight + 'px'});
-			$('.CodeMirror-gutters').css({height: mainHeight - tabUlHeight + 'px'});
+			$('.CodeMirror').css({height: mainHeight + 'px'});
+			$('.CodeMirror-gutters').css({height: mainHeight + 'px'});
 			$('#donate_button_label').css({width: $('#header').width() - $('donate_button_label').outerWidth() - $('#header h1').outerWidth() - $('#actions').outerWidth() - 200 + 'px'});
 		});
 
