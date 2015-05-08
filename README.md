@@ -15,5 +15,3 @@ Next, edit config.json so that `bin.stable` is the path to the "stable" LilyPond
 and `bin.unstable` is the path to the unstable binary. Launch LilyBin
 with `node server.js`. Navigate to http://localhost:3001, and you should
 be presented with an editor pane and a successfully rendered score.
-
-Copyright Google
