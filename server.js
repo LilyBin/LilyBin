@@ -1,7 +1,8 @@
 // Misc
-var fs = require('fs'),
+var Promise = require('bluebird'),
+	fs = Promise.promisifyAll(require('fs')),
 	path = require('path'),
-	exec = require('child_process').exec,
+	exec = require('./lib/exec'),
 	execSync = require('sync-exec'),
 	_ = require('underscore');
 
@@ -20,28 +21,17 @@ app.use(require('body-parser').urlencoded({extended: false}));
 // Use underscore.js for templating.
 var cache = {};
 app.engine('html', function (path, options, callback) {
-	var str;
-
 	if (cache[path]) {
-		try {
-			str = cache[path](options);
-		} catch (e) {
-			return callback(e);
-		}
-		return callback(null, str);
+		return Promise.resolve(options)
+			.then(cache[path])
+			.nodeify(callback);
 	}
 
-	fs.readFile(path, function (e, content) {
-		if (e) return callback(e);
-		str = content.toString();
-		try {
+	fs.readFileAsync(path, 'utf8')
+		.then(function (str) {
 			cache[path] = _.template(str);
-			str = cache[path](options);
-		} catch (e) {
-			return callback(e);
-		}
-		return callback(null, str);
-	});
+			return cache[path](options);
+		}).nodeify(callback);
 });
 app.set('views', __dirname + '/views');
 app.set('view engine', 'html');
@@ -60,62 +50,70 @@ app.post('/save', function(req, res) {
 		version = req.body.version || 'stable',
 		tempSrc = __dirname + '/src/' + id + '.ly';
 
-	db.scores.save(id+':'+revision, code, version, function(err) {
-		if (err) {
+	db.scores.save(id+':'+revision, code, version)
+		.then(function () {
+			res.send({id: id, revision: revision});
+		}).catch(function (err) {
 			return res.send(err, 500);
-		}
-		res.send({id: id, revision: revision});
-	});
+		});
 });
 
 app.post('/prepare_preview', function(req, res) {
 	var code = req.body.code,
 		id = req.body.id || Math.random().toString(36).substring(2, 8),
 		version = req.body.version || 'stable',
-		tempSrc = __dirname + '/render/' + id + '.ly';
+		tempSrc = __dirname + '/render/' + id + '.ly',
+		results;
 
-	fs.writeFile(tempSrc, code, function(err) {
-		if (err) throw err;
-		var start = new Date().getTime();
-		exec(config.bin[version] + ' --formats=pdf,png -o ' + __dirname + '/render/' + id + ' ' + tempSrc, function(err, stdout, stderr) {
-			if (err) {
+	fs.writeFileAsync(tempSrc, code).catch(function (err) {
+		return Promise.reject({ text: 'Cannot write file', err: err});
+	}).then(function() {
+		return exec(
+			config.bin[version] +
+			' --formats=pdf,png' +
+			' -o ' + __dirname + '/render/' + id +
+			' ' + tempSrc
+		).catch(function (err) {
+			res.send({
+				error: err.stderr,
+				id: id,
+				pages: 0
+			});
+			return Promise.reject('DONE');
+		});
+	}).then(function (ret) {
+		results = ret;
+		return fs.statAsync(
+			__dirname + '/render/' + id + '.png'
+		).catch(function () {
+			return countPages(id, 1).then(function (pages) {
 				res.send({
-					error: stderr,
+					output: results.stderr,
 					id: id,
-					pages: 0
+					pages: pages
 				});
-				return;
-			}
-			fs.stat(__dirname + '/render/' + id + '.png', function(err, stats) {
-				if (!err && stats) {
-					fs.rename(__dirname + '/render/' + id + '.png', __dirname + '/render/' + id + '-page1' + '.png', function (err) {
-						if (err) {
-							res.status(500).send('Internal server error: file rename failed');
-							console.error(err);
-							return;
-						}
-						res.send({
-							output: stderr,
-							id: id,
-							pages: 1
-						});
-					})
-				}
-				else {
-					function recurseStat(page) {
-						fs.stat(__dirname + '/render/' + id + '-page' + page + '.png', function (err, stats) {
-							if (!err) return recurseStat(++page);
-							res.send({
-								output: stderr,
-								id: id,
-								pages: page - 1
-							});
-						});
-					}
-					recurseStat(1);
-				}
+				return Promise.reject('DONE');
 			});
 		});
+	}).then(function () {
+		return fs.renameAsync(
+			__dirname + '/render/' + id + '.png',
+			__dirname + '/render/' + id + '-page1' + '.png'
+		).catch(function (err) {
+			return Promise.reject({ text: 'file rename failed', err: err });
+		});
+	}).then(function () {
+		res.send({
+			output: results.stderr,
+			id: id,
+			pages: 1
+		});
+	}).catch(function (err) {
+		if (err === 'DONE') return;
+		res.status(500).send('Internal server error: ' +
+			(err.text || err.message || '')
+		);
+		console.error(err.err || err);
 	});
 });
 
@@ -154,13 +152,16 @@ app.get('/:id?/:revision?', function(req, res, next) {
 		});
 	}
 
-	db.scores.get(id+':'+revision, function(err, score) {
-		if (!score) return next();
-		score.id = id;
-		score.revision = revision;
-		res.render('index.html', {
-			score: JSON.stringify(score), versions: versions});
-	});
+	db.scores.get(id+':'+revision)
+		.then(function (score) {
+			if (!score) throw new Error('no score');
+			score.id = id;
+			score.revision = revision;
+			res.render('index.html', {
+				score: JSON.stringify(score), versions: versions});
+		}).catch(function(err) {
+			next();
+		})
 });
 
 var bins = Object.keys(config.bin)
@@ -177,3 +178,12 @@ for (var i = 0; i < bins.length; i++) {
 var port;
 app.listen(port = process.env.LISTEN_PORT || 3001);
 console.log('Listening on port ' + port + '.');
+
+function countPages(id) {
+	var re = new RegExp(id + '-page.*\.png');
+	return fs.readdirAsync(__dirname + '/render').then(function (files) {
+		return files.filter(function (f) {
+			return re.test(f);
+		}).length;
+	});
+}
