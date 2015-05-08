@@ -86,21 +86,14 @@ app.post('/prepare_preview', function(req, res) {
 		return fs.statAsync(
 			__dirname + '/render/' + id + '.png'
 		).catch(function () {
-			function recurseStat(page) {
-				return fs.statAsync(
-					__dirname + '/render/' + id + '-page' + page + '.png'
-				).then(function () {
-					return recurseStat(++page);
-				}, function () {
-					res.send({
-						output: results.stderr,
-						id: id,
-						pages: page - 1
-					});
-					return Promise.reject('DONE');
+			return countPages(id, 1).then(function (pages) {
+				res.send({
+					output: results.stderr,
+					id: id,
+					pages: pages
 				});
-			}
-			return recurseStat(1);
+				return Promise.reject('DONE');
+			});
 		});
 	}).then(function () {
 		return fs.renameAsync(
@@ -185,3 +178,12 @@ for (var i = 0; i < bins.length; i++) {
 var port;
 app.listen(port = process.env.LISTEN_PORT || 3001);
 console.log('Listening on port ' + port + '.');
+
+function countPages(id) {
+	var re = new RegExp(id + '-page.*\.png');
+	return fs.readdirAsync(__dirname + '/render').then(function (files) {
+		return files.filter(function (f) {
+			return re.test(f);
+		}).length;
+	});
+}
