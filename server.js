@@ -188,14 +188,17 @@ app.get('/:id?/:revision?', function(req, res, next) {
 
 	db.scores.get(id+':'+revision)
 		.then(function (score) {
-			if (!score) throw new Error('no score');
 			score.id = id;
 			score.revision = revision;
 			res.render('index.html', {
 				score: JSON.stringify(score), versions: versions});
 		}).catch(function(err) {
-			next();
-		})
+			if (err.notFound) {
+				return res.status(404).send('Score not found');
+			}
+			res.status(500).send('Internal server error');
+			console.error(err);
+		}).catch(console.error);
 });
 
 const bins = Object.keys(config.bin)
