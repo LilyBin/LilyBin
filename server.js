@@ -89,7 +89,7 @@ app.post('/prepare_preview', function(req, res) {
 		version = req.body.version || 'stable';
 	var id,
 		tempSrc,
-		results;
+		response = {};
 
 	new Promise(function(fulfill, reject) {
 		if (req.body.id) return fulfill(req.body.id);
@@ -97,6 +97,7 @@ app.post('/prepare_preview', function(req, res) {
 	}).then(function(_id) {
 		id = _id;
 		tempSrc = __dirname + '/render/' + _id + '.ly';
+		response.id = _id;
 	}).then(function() {
 		return fs.writeFileAsync(tempSrc, code).catch(function (err) {
 			return Promise.reject({ text: 'Cannot write file', err: err});
@@ -107,43 +108,32 @@ app.post('/prepare_preview', function(req, res) {
 			' --formats=pdf,png' +
 			' -o ' + __dirname + '/render/' + id +
 			' ' + tempSrc
-		).catch(function (err) {
-			res.send({
-				error: err.stderr,
-				id: id,
-				pages: 0
-			});
-			return Promise.reject('DONE');
-		});
-	}).then(function (ret) {
-		results = ret;
-		return fs.statAsync(
-			__dirname + '/render/' + id + '.png'
-		).catch(function () {
-			return countPages(id, 1).then(function (pages) {
-				res.send({
-					output: results.stderr,
-					id: id,
-					pages: pages
+		).then(function (ret) {
+			response.output = ret.stderr;
+			return fs.statAsync(
+				__dirname + '/render/' + id + '.png'
+			).then(function () {
+				response.pages = 1;
+				return fs.renameAsync(
+					__dirname + '/render/' + id + '.png',
+					__dirname + '/render/' + id + '-page1' + '.png'
+				).catch(function (err) {
+					return Promise.reject({ text: 'file rename failed', err: err });
 				});
-				return Promise.reject('DONE');
-			});
+			}, function () {
+				return countPages(id, 1).then(function (pages) {
+					response.pages = pages;
+				});
+			})
+		}, function (err) {
+			response.error = err.stderr;
+			response.pages = 0;
 		});
 	}).then(function () {
-		return fs.renameAsync(
-			__dirname + '/render/' + id + '.png',
-			__dirname + '/render/' + id + '-page1' + '.png'
-		).catch(function (err) {
-			return Promise.reject({ text: 'file rename failed', err: err });
-		});
-	}).then(function () {
-		res.send({
-			output: results.stderr,
-			id: id,
-			pages: 1
-		});
+		// res.send.bind(res, response) doesn't work because Express.js supports
+		// a two-argument form of res.send.
+		res.send(response);
 	}).catch(function (err) {
-		if (err === 'DONE') return;
 		res.status(500).send('Internal server error: ' +
 			(err.text || err.message || '')
 		);
