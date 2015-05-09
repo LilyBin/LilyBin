@@ -1,10 +1,12 @@
 // Misc
-const Promise = require('bluebird'),
-	fs = Promise.promisifyAll(require('fs')),
+const fs = Promise.promisifyAll(require('fs')),
 	path = require('path'),
 	exec = require('./lib/exec'),
 	execSync = require('sync-exec'),
 	_ = require('underscore');
+// Promise might be already declared if Node.js/io.js is new enough. `const`
+// theoretically wouldn't work in those cases.
+var Promise = require('bluebird');
 
 // Express
 const express = require('express'),
