@@ -1,4 +1,9 @@
 % LilyBin
-{
-	c'
+\score{
+	{
+		c'
+	}
+
+	\layout{}
+	\midi{}
 }
