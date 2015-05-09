@@ -55,7 +55,7 @@ app.post('/save', function(req, res) {
 			res.send({id: id, revision: revision});
 		}).catch(function (err) {
 			return res.send(err, 500);
-		});
+       	}).catch(console.error);
 });
 
 app.post('/prepare_preview', function(req, res) {
@@ -114,7 +114,7 @@ app.post('/prepare_preview', function(req, res) {
 			(err.text || err.message || '')
 		);
 		console.error(err.err || err);
-	});
+	}).catch(console.error);
 });
 
 app.get('/preview', function(req, res) {
