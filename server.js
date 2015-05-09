@@ -36,6 +36,9 @@ app.engine('html', function (path, options, callback) {
 app.set('views', __dirname + '/views');
 app.set('view engine', 'html');
 
+// Default score
+const defaultScore = fs.readFileSync(__dirname + '/default.ly', 'utf8');
+
 // Get config options
 const config = require('./config.json'),
 	versions = {};
@@ -177,7 +180,7 @@ app.get('/:id?/:revision?', function(req, res, next) {
 			score: JSON.stringify({
 				id: '',
 				revision: '0',
-				code: '% LilyBin\n{\n  c\'\n}',
+				code: defaultScore,
 			}),
 			versions: versions,
 		});
