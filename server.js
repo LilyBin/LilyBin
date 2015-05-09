@@ -13,6 +13,7 @@ const express = require('express'),
 
 // Serve static files from ./htdocs
 app.use(express.static(__dirname + '/htdocs'));
+app.use('/css/', express.static(__dirname + '/node_modules/normalize.css'));
 app.use('/js/', express.static(__dirname + '/node_modules/requirejs'));
 app.use('/js/', express.static(__dirname + '/node_modules/underscore'));
 app.use('/js/CodeMirror/', express.static(__dirname + '/node_modules/codemirror'));
