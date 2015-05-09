@@ -1,5 +1,5 @@
 // Misc
-var Promise = require('bluebird'),
+const Promise = require('bluebird'),
 	fs = Promise.promisifyAll(require('fs')),
 	path = require('path'),
 	exec = require('./lib/exec'),
@@ -7,7 +7,7 @@ var Promise = require('bluebird'),
 	_ = require('underscore');
 
 // Express
-var express = require('express'),
+const express = require('express'),
 	app = express();
 
 // Serve static files from ./htdocs
@@ -19,7 +19,7 @@ app.use('/js/CodeMirror/', express.static(__dirname + '/node_modules/codemirror'
 app.use(require('body-parser').urlencoded({extended: false}));
 
 // Use underscore.js for templating.
-var cache = {};
+const cache = {};
 app.engine('html', function (path, options, callback) {
 	if (cache[path]) {
 		return Promise.resolve(options)
@@ -37,16 +37,16 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'html');
 
 // Get config options
-var config = require('./config.json'),
+const config = require('./config.json'),
 	versions = {};
 
 // DB
-var db = require('./lib/db');
+const db = require('./lib/db');
 
-var MAX_ATTEMPTS = 5;
+const MAX_ATTEMPTS = 5;
 function getNewId(attempt) {
 	attempt = attempt || 0;
-	var id = Math.random().toString(36).substring(2, 8);
+	const id = Math.random().toString(36).substring(2, 8);
 
 	return db.scores.get(id + ':1').then(function () {
 		if (++attempt >= MAX_ATTEMPTS) {
@@ -59,10 +59,10 @@ function getNewId(attempt) {
 }
 
 app.post('/save', function(req, res) {
-	var code = req.body.code,
+	const code = req.body.code,
 		revision = req.body.revision || 1,
-		version = req.body.version || 'stable',
-               id;
+		version = req.body.version || 'stable';
+	var id;
 
 	new Promise(function(fulfill, reject) {
 		if (req.body.id) return fulfill(req.body.id);
@@ -82,9 +82,9 @@ app.post('/save', function(req, res) {
 });
 
 app.post('/prepare_preview', function(req, res) {
-	var code = req.body.code,
-		version = req.body.version || 'stable',
-		id,
+	const code = req.body.code,
+		version = req.body.version || 'stable';
+	var id,
 		tempSrc,
 		results;
 
@@ -149,7 +149,7 @@ app.post('/prepare_preview', function(req, res) {
 });
 
 app.get('/preview', function(req, res) {
-	var id = req.query.id,
+	const id = req.query.id,
 		page = req.query.page || 1;
 
 	res.sendFile(__dirname + '/render/' + id + '-page' + page + '.png');
@@ -157,19 +157,19 @@ app.get('/preview', function(req, res) {
 
 
 app.get('/downloadPDF', function(req, res) {
-	var id = req.query.id;
+	const id = req.query.id;
 
 	res.download(__dirname + '/render/' + id + '.pdf', 'score.pdf');
 });
 
 app.get('/downloadMidi', function(req, res) {
-	var id = req.query.id;
+	const id = req.query.id;
 
 	res.download(__dirname + '/render/' + id + '.midi', 'score.midi');
 });
 
 app.get('/:id?/:revision?', function(req, res, next) {
-	var id = req.params.id,
+	const id = req.params.id,
 		revision = req.params.revision || 1;
 
 	if (!id) {
@@ -195,7 +195,7 @@ app.get('/:id?/:revision?', function(req, res, next) {
 		})
 });
 
-var bins = Object.keys(config.bin)
+const bins = Object.keys(config.bin)
 for (var i = 0; i < bins.length; i++) {
 	var out = execSync(config.bin[bins[i]] + ' -v');
 	if (out.status !== 0) {
@@ -206,12 +206,12 @@ for (var i = 0; i < bins.length; i++) {
 	versions[bins[i]] = out.stdout.match(/^GNU LilyPond (.*)$/m)[1];
 }
 
-var port;
-app.listen(port = process.env.LISTEN_PORT || 3001);
+const port = process.env.LISTEN_PORT || 3001;
+app.listen(port);
 console.log('Listening on port ' + port + '.');
 
 function countPages(id) {
-	var re = new RegExp(id + '-page.*\.png');
+	const re = new RegExp(id + '-page.*\.png');
 	return fs.readdirAsync(__dirname + '/render').then(function (files) {
 		return files.filter(function (f) {
 			return re.test(f);
