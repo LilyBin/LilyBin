@@ -43,30 +43,61 @@ var config = require('./config.json'),
 // DB
 var db = require('./lib/db');
 
+var MAX_ATTEMPTS = 5;
+function getNewId(attempt) {
+	attempt = attempt || 0;
+	var id = Math.random().toString(36).substring(2, 8);
+
+	return db.scores.get(id + ':1').then(function () {
+		if (++attempt >= MAX_ATTEMPTS) {
+			return Promise.reject(new Error('Too many attempts for new ID'));
+		}
+		return getNewId(attempt);
+	}, function () {
+		return id;
+	})
+}
+
 app.post('/save', function(req, res) {
 	var code = req.body.code,
-		id = req.body.id || Math.random().toString(36).substring(2, 8),
 		revision = req.body.revision || 1,
 		version = req.body.version || 'stable',
-		tempSrc = __dirname + '/src/' + id + '.ly';
+               id;
 
-	db.scores.save(id+':'+revision, code, version)
-		.then(function () {
-			res.send({id: id, revision: revision});
-		}).catch(function (err) {
-			return res.send(err, 500);
-       	}).catch(console.error);
+	new Promise(function(fulfill, reject) {
+		if (req.body.id) return fulfill(req.body.id);
+		getNewId().then(fulfill, reject);
+	}).then(function(_id) {
+		id = _id;
+	}).then(function() {
+		return db.scores.save(id+':'+revision, code, version)
+	}).then(function () {
+		res.send({id: id, revision: revision});
+	}).catch(function (err) {
+		res.status(500).send('Internal server error: ' +
+			(err.text || err.message || '')
+		);
+		console.error(err.err || err);
+	}).catch(console.error);
 });
 
 app.post('/prepare_preview', function(req, res) {
 	var code = req.body.code,
-		id = req.body.id || Math.random().toString(36).substring(2, 8),
 		version = req.body.version || 'stable',
-		tempSrc = __dirname + '/render/' + id + '.ly',
+		id,
+		tempSrc,
 		results;
 
-	fs.writeFileAsync(tempSrc, code).catch(function (err) {
-		return Promise.reject({ text: 'Cannot write file', err: err});
+	new Promise(function(fulfill, reject) {
+		if (req.body.id) return fulfill(req.body.id);
+		getNewId().then(fulfill, reject);
+	}).then(function(_id) {
+		id = _id;
+		tempSrc = __dirname + '/render/' + _id + '.ly';
+	}).then(function() {
+		return fs.writeFileAsync(tempSrc, code).catch(function (err) {
+			return Promise.reject({ text: 'Cannot write file', err: err});
+		});
 	}).then(function() {
 		return exec(
 			config.bin[version] +
