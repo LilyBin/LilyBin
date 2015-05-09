@@ -45,14 +45,14 @@ const config = require('./config.json'),
 	versions = {};
 
 // DB
-const db = require('./lib/db');
+const scores = require('./lib/db');
 
 const MAX_ATTEMPTS = 5;
 function getNewId(attempt) {
 	attempt = attempt || 0;
 	const id = Math.random().toString(36).substring(2, 8);
 
-	return db.scores.get(id + ':1').then(function () {
+	return scores.get(id, 1).then(function () {
 		if (++attempt >= MAX_ATTEMPTS) {
 			return Promise.reject(new Error('Too many attempts for new ID'));
 		}
@@ -64,7 +64,6 @@ function getNewId(attempt) {
 
 app.post('/save', function(req, res) {
 	const code = req.body.code,
-		revision = req.body.revision || 1,
 		version = req.body.version || 'stable';
 	var id;
 
@@ -74,9 +73,9 @@ app.post('/save', function(req, res) {
 	}).then(function(_id) {
 		id = _id;
 	}).then(function() {
-		return db.scores.save(id+':'+revision, code, version)
-	}).then(function () {
-		res.send({id: id, revision: revision});
+		return scores.save(id, code, version);
+	}).then(function (info) {
+		res.send(info);
 	}).catch(function (err) {
 		res.status(500).send('Internal server error: ' +
 			(err.text || err.message || '')
@@ -177,7 +176,7 @@ app.get('/:id?/:revision?', function(req, res, next) {
 		});
 	}
 
-	db.scores.get(id+':'+revision)
+	scores.get(id, revision)
 		.then(function (score) {
 			score.id = id;
 			score.revision = revision;
