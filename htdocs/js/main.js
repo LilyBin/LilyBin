@@ -35,7 +35,6 @@ require([
 		$('.CodeMirror-gutters').css({height: mainHeight + 'px'});
 		$('#preview_container').css({height: mainHeight + 'px'});
 		$('#code_container').css({width: $('#code_container').parent().width() + 'px', left: '0px'});
-		$('#donate_button_label').css({width: $('#header').width() - $('donate_button_label').outerWidth() - $('#header h1').outerWidth() - $('#actions').outerWidth() - 200 + 'px'});
 		$(window).resize(function() {
 			var mainHeight = $(window).height() - $('#header').outerHeight();
 
@@ -45,7 +44,6 @@ require([
 			$('#preview_container, .vsplitbar, #main, #left_pane').css({height: mainHeight + 'px'});
 			$('.CodeMirror').css({height: mainHeight + 'px'});
 			$('.CodeMirror-gutters').css({height: mainHeight + 'px'});
-			$('#donate_button_label').css({width: $('#header').width() - $('donate_button_label').outerWidth() - $('#header h1').outerWidth() - $('#actions').outerWidth() - 200 + 'px'});
 		});
 
 		var previewWidth = $(window).width() * .4;
