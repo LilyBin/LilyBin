@@ -1,24 +1,24 @@
 <!doctype html>
 <html>
-  <head>
-    <title>LilyBin LilyPond Score Editor</title>
-	<meta charset="utf-8">
-	<meta property="og:title" content="LilyPond Score">
-	<meta property="og:description" content="LilyPond Score made using LilyBin.">
-    <script>var score = <%= score %>;</script>
-    <script data-main="/js/main" src="/js/require.js"></script>
-    <link rel="stylesheet" href="/css/normalize.css">
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,800">
-    <link rel="stylesheet" href="/js/CodeMirror/lib/codemirror.css">
-    <link rel="stylesheet" href="/css/main.css">
-    <link rel="stylesheet" href="/css/tipTip.css">
-  </head>
-  <body>
-  	<div id="header">
-  		<h1>LilyBin</h1>
-  		<div id="actions">
-  			<button id="preview_button" title="(Ctrl+Enter)">Preview</button><button id="preview_options_button">&#9660;</button>
-  			<ul id="version_select_menu">
+	<head>
+		<title>LilyBin LilyPond Score Editor</title>
+		<meta charset="utf-8">
+		<meta property="og:title" content="LilyPond Score">
+		<meta property="og:description" content="LilyPond Score made using LilyBin.">
+		<script>var score = <%= score %>;</script>
+		<script data-main="/js/main" src="/js/require.js"></script>
+		<link rel="stylesheet" href="/css/normalize.css">
+		<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,800">
+		<link rel="stylesheet" href="/js/CodeMirror/lib/codemirror.css">
+		<link rel="stylesheet" href="/css/main.css">
+		<link rel="stylesheet" href="/css/tipTip.css">
+	</head>
+	<body>
+		<div id="header">
+			<h1>LilyBin</h1>
+			<div id="actions">
+				<button id="preview_button" title="(Ctrl+Enter)">Preview</button><button id="preview_options_button">&#9660;</button>
+				<ul id="version_select_menu">
 				<li>
 					<label for="version_stable">
 					<input type="radio" name="version" id="version_stable" value="stable" checked="checked">
@@ -31,23 +31,23 @@
 					<span class="checkmark"></span>
 					Latest Unstable (<%= versions.unstable %>)</label>
 				</li>
-  			</ul>
-  			<a class="button" id="" href="javascript:history.go(0)">Reset</a>
-  			<button id="save_button" title="(Ctrl+S)">Save</button>
+				</ul>
+				<a class="button" id="" href="javascript:history.go(0)">Reset</a>
+				<button id="save_button" title="(Ctrl+S)">Save</button>
 			<!--
-  			<a class="button" id="dropbox_login" href="/dropbox_login">Login to Dropbox</a>
-  			<a class="button" id="dropbox_logout" href="/dropbox_logout">Logout of Dropbox</a>
+				<a class="button" id="dropbox_login" href="/dropbox_login">Login to Dropbox</a>
+				<a class="button" id="dropbox_logout" href="/dropbox_logout">Logout of Dropbox</a>
 			-->
-  		</div>
-  	</div>
-  	<div id="main">
-  		<div id="left_pane">
-			<div id="code_container"></div>
-  		</div>
-		<div id="preview_container">
-			<img id="preview">
+			</div>
 		</div>
-  	</div>
-  </body>
+		<div id="main">
+			<div id="left_pane">
+				<div id="code_container"></div>
+			</div>
+			<div id="preview_container">
+				<img id="preview">
+			</div>
+		</div>
+	</body>
 </html>
 
