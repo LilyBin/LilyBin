@@ -1,10 +1,9 @@
 define([
 	'jquery',
-	'underscore',
 	'CodeMirror/lib/codemirror',
 	'CodeMirror/mode/stex/stex',
 	'CodeMirror/addon/edit/matchbrackets'
-], function($, _, CodeMirror) {
+], function($, CodeMirror) {
 	function Editor(container, options) {
 		this.event = $({});
 		
@@ -35,8 +34,8 @@ define([
 			tabSize: 4,
 			indentWithTabs: true,
 			extraKeys: {
-				'Ctrl-Enter': _.bind(this.loadPreview, this),
-				'Ctrl-S': _.bind(this.save, this)
+				'Ctrl-Enter': this.loadPreview.bind(this),
+				'Ctrl-S': this.save.bind(this)
 			},
 			onChange: function() {
 				_this.blank = false;

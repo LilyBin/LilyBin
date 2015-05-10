@@ -15,7 +15,6 @@ const express = require('express'),
 app.use(express.static(__dirname + '/htdocs'));
 app.use('/css/', express.static(__dirname + '/node_modules/normalize.css'));
 app.use('/js/', express.static(__dirname + '/node_modules/requirejs'));
-app.use('/js/', express.static(__dirname + '/node_modules/underscore'));
 app.use('/js/CodeMirror/', express.static(__dirname + '/node_modules/codemirror'));
 // We don't need the extended features right now.
 app.use(require('body-parser').urlencoded({extended: false}));
