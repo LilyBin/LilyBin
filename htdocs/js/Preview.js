@@ -10,54 +10,50 @@ define([
 		this.page = 1;
 		this.container = container;
 		this.img = container.find('img');
-		this.prevButton = $('<button></button>')
-			.text('Previous Page')
+		this.controls = container.find('.preview_controls');
+
+		var _$ = this.controls.find.bind(this.controls);
+		this.prevButton = _$('prev')
 			.click(function() {
 				_this.prevPage();
 			});
-		this.nextButton = $('<button></button>')
-			.text('Next Page')
+		this.nextButton = _$('next')
 			.click(function() {
 				_this.nextPage();
 			});
-		this.zoomInButton = $('<button></button>').text('Zoom In').click(function() {
-			_this.zoomIn();
-		});
-		this.zoomOutButton = $('<button></button>').text('Zoom Out').click(function() {
-			_this.zoomOut();
-		});
-		this.fitButton = $('<button></button>').text('Fit').click(function() {
-			_this.fit();
-		});
-		this.fitWidthButton = $('<button></button>').text('Fit Width').click(function() {
-			_this.fit(true);
-		});
-		this.downloadPDFButton = $('<button></button>').text('Download PDF').click(function() {
-			//window.location = '/downloadPDF?id=' + _this.id;
-			$('<iframe />').css('display', 'none').appendTo('body').attr('src', '/downloadPDF?id=' + _this.id);
-		});
-		this.downloadMidiButton = $('<button></button>').text('Download Midi').click(function() {
-			$('<iframe />').css('display', 'none').appendTo('body').attr('src', '/downloadMidi?id=' + _this.id);
-		});
+		_$('#zoom_in')
+			.click(function() {
+				_this.zoomIn();
+			});
+		_$('#zoom_out')
+			.click(function() {
+				_this.zoomOut();
+			});
+		_$('#fit')
+			.click(function() {
+				_this.fit();
+			});
+		_$('#fitw')
+			.click(function() {
+				_this.fit(true);
+			});
+		_$('#pdf')
+			.click(function() {
+				//window.location = '/downloadPDF?id=' + _this.id;
+				$('<iframe />').css('display', 'none').appendTo('body').attr('src', '/downloadPDF?id=' + _this.id);
+			});
+		_$('#midi')
+			.click(function() {
+				$('<iframe />').css('display', 'none').appendTo('body').attr('src', '/downloadMidi?id=' + _this.id);
+			});
 	
 		this.spinner = $('<div />').css({position: 'absolute', width: '100%', height: '100%'}).spinner({ colour: '100,100,100' }).hide();
-	
-		var controls = $('<div class="preview_controls"></div>').append(
-			this.prevButton,
-			this.nextButton,
-			this.zoomInButton,
-			this.zoomOutButton,
-			this.fitButton,
-			this.fitWidthButton,
-			this.downloadPDFButton,
-			this.downloadMidiButton
-		);
 
 		this.error = $('<div />').addClass('preview_error').append($('<h3 />').text('Error'), $('<pre />').addClass('message'));
 	
 		this.setupPanning();
 	
-		container.append(controls, this.spinner, this.error);
+		container.append(this.spinner, this.error);
 	}
 	Preview.prototype.prevPage = function() {
 		--this.page;
@@ -153,10 +149,11 @@ define([
 		});
 	};
 	Preview.prototype.fit = function(fitWidth) {
-		var controlsHeight = this.container.find('.preview_controls').outerHeight();
+		var $preview = this.controls;
+		var controlsHeight = $preview.outerHeight();
 			containerHeight = this.container.height() - controlsHeight,
-			containerWidth = this.container.width(),
-			containerRatio = containerWidth / containerHeight,
+			controlsWidth = $preview.outerWidth(),
+			containerRatio = controlsWidth / containerHeight,
 			margin = 10;
 		
 		this.img.css({top: controlsHeight + margin + 'px', left: margin + 'px'});
@@ -164,15 +161,15 @@ define([
 		if (containerRatio < this.imgRatio || fitWidth) {
 			// fit width
 			this.img.css({
-				width: containerWidth - margin * 2,
-				height: containerWidth / this.imgRatio - margin * 2
+				width: controlsWidth - margin * 2,
+				height: controlsWidth / this.imgRatio - margin * 2
 			});
 		} else {
 			// fit height
 			this.img.css({
 				height: containerHeight - margin * 2,
 				width: containerHeight * this.imgRatio,
-				left: (containerWidth - containerHeight * this.imgRatio) / 2
+				left: (controlsWidth - containerHeight * this.imgRatio) / 2
 			});
 		}
 	};

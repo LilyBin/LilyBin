@@ -5,47 +5,55 @@
 		<meta charset="utf-8">
 		<meta property="og:title" content="LilyPond Score">
 		<meta property="og:description" content="LilyPond Score made using LilyBin.">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<script>var score = <%= score %>;</script>
 		<script data-main="/js/main" src="/js/require.js"></script>
-		<link rel="stylesheet" href="/css/normalize.css">
 		<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,800">
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 		<link rel="stylesheet" href="/js/CodeMirror/lib/codemirror.css">
 		<link rel="stylesheet" href="/css/main.css">
-		<link rel="stylesheet" href="/css/tipTip.css">
 	</head>
 	<body>
-		<div id="header">
-			<h1>LilyBin</h1>
-			<div id="actions">
-				<button id="preview_button" title="(Ctrl+Enter)">Preview</button><button id="preview_options_button">&#9660;</button>
-				<ul id="version_select_menu">
-				<li>
-					<label for="version_stable">
-					<input type="radio" name="version" id="version_stable" value="stable" checked="checked">
-					<span class="checkmark"></span>
-					Latest Stable (<%= versions.stable %>)</label>
-				</li>
-				<li>
-					<label for="version_unstable">
-					<input type="radio" name="version" id="version_unstable" value="unstable">
-					<span class="checkmark"></span>
-					Latest Unstable (<%= versions.unstable %>)</label>
-				</li>
+		<nav id="header" class="navbar navbar-lilybin navbar-unresponsive navbar-static-top">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<span class="navbar-brand navbar-brand-img">
+						<img width="30" height="30" src="/images/ly.svg">
+					</span>
+					<span class="navbar-brand">LilyBin</span>
+				</div>
+				<ul class="nav navbar-nav">
+					<li><a href="#" class="noop-a" id="preview_button" title="<kbd><kbd>Ctrl</kbd>+<kbd>Enter</kbd></kbd>" data-toggle="tooltip" data-placement="bottom">Preview</a></li>
+					<li class="dropdown">
+						<a href="#" id="version_btn" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">LilyPond Version <span class="caret"></span></a>
+						<ul class="dropdown-menu" id="version_selection" role="menu">
+							<li><a href="#" class="noop-a" data-version="stable">
+								Latest Stable (<%= versions.stable %>)
+							</a></li>
+							<li><a href="#" class="noop-a" data-version="unstable">
+								Latest Unstable (<%= versions.unstable %>)
+							</a></li>
+						</ul>
+					</li>
+					<li><a href="javascript:history.go(0)">Reset</a></li>
+					<li><a href="#" class="noop-a" id="save_button" title="<kbd><kbd>Ctrl</kbd>+<kbd>S</kbd></kbd>" data-toggle="tooltip" data-placement="bottom">Save</a></li>
 				</ul>
-				<a class="button" id="" href="javascript:history.go(0)">Reset</a>
-				<button id="save_button" title="(Ctrl+S)">Save</button>
-			<!--
-				<a class="button" id="dropbox_login" href="/dropbox_login">Login to Dropbox</a>
-				<a class="button" id="dropbox_logout" href="/dropbox_logout">Logout of Dropbox</a>
-			-->
 			</div>
-		</div>
+		</nav>
 		<div id="main">
-			<div id="left_pane">
-				<div id="code_container"></div>
-			</div>
-			<div id="preview_container">
+			<div class="col-sm-5" id="code_container"></div>
+			<div class="col-sm-7" id="preview_container">
 				<img id="preview">
+				<div class="preview_controls">
+					<button class="btn btn-default btn-sm" id="prev" disabled="disabled">Previous Page</button>
+					<button class="btn btn-default btn-sm" id="next" disabled="disabled">Next Page</button>
+					<button class="btn btn-default btn-sm" id="zoom_in">Zoom In</button>
+					<button class="btn btn-default btn-sm" id="zoom_out">Zoom Out</button>
+					<button class="btn btn-default btn-sm" id="fit">Fit</button>
+					<button class="btn btn-default btn-sm" id="fitw">Fit Width</button>
+					<button class="btn btn-default btn-sm" id="pdf">Download PDF</button>
+					<button class="btn btn-default btn-sm" id="midi">Download MIDI</button>
+				</div>
 			</div>
 		</div>
 	</body>
