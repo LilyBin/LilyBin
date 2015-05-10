@@ -36,11 +36,6 @@ define([
 			extraKeys: {
 				'Ctrl-Enter': this.loadPreview.bind(this),
 				'Ctrl-S': this.save.bind(this)
-			},
-			onChange: function() {
-				_this.blank = false;
-				codemirrorInstance.unsavedChanges = true;
-				li.addClass('unsaved_changes');
 			}
 		});
 		
