@@ -5,7 +5,7 @@ define([
 ], function($) {
 	function Preview(container, id) {
 		var _this = this;
-	
+
 		this.id = id;
 		this.page = 1;
 		this.container = container;
@@ -46,13 +46,13 @@ define([
 			.click(function() {
 				$('<iframe />').css('display', 'none').appendTo('body').attr('src', '/downloadMidi?id=' + _this.id);
 			});
-	
+
 		this.spinner = $('<div />').css({position: 'absolute', width: '100%', height: '100%'}).spinner({ colour: '100,100,100' }).hide();
 
 		this.error = $('<div />').addClass('preview_error').append($('<h3 />').text('Error'), $('<pre />').addClass('message'));
-	
+
 		this.setupPanning();
-	
+
 		container.append(this.spinner, this.error);
 	}
 	Preview.prototype.prevPage = function() {
@@ -116,9 +116,9 @@ define([
 		this.img.mousedown(function(e) {
 			var x = _this.img.position().left, y = _this.img.position().top,
 				_pageX = e.pageX, _pageY = e.pageY;
-		
+
 			$(document).mousemove(move);
-	
+
 			function move(e) {
 				_this.img.css({
 					left: x + (e.pageX - _pageX) + 'px',
@@ -127,21 +127,21 @@ define([
 				e.preventDefault();
 				return false;
 			}
-		
+
 			$(document).mouseup(function(e) {
 				$(document).unbind('mousemove', move);
 			});
-		
+
 			e.preventDefault();
 			return false;
 		});
-	
+
 		this.container.mousewheel(function(e, delta, deltaX, deltaY) {
 			_this.img.css({
 				top: _this.img.position().top + deltaY * 20,
 				left: _this.img.position().left - deltaX * 20
 			});
-		
+
 			e.preventDefault();
 			return false;
 			//if (deltaY > 0) _this.zoomIn();
@@ -155,9 +155,9 @@ define([
 			controlsWidth = $preview.outerWidth(),
 			containerRatio = controlsWidth / containerHeight,
 			margin = 10;
-		
+
 		this.img.css({top: controlsHeight + margin + 'px', left: margin + 'px'});
-		
+
 		if (containerRatio < this.imgRatio || fitWidth) {
 			// fit width
 			this.img.css({
@@ -177,7 +177,7 @@ define([
 		var width = this.img.width(),
 			height = this.img.height(),
 			widthDiff = (height + height * .1) * this.imgRatio - width;
-	
+
 		this.img.css({
 			width: (height + height * .1) * this.imgRatio,
 			height: height + height * .1,
@@ -189,7 +189,7 @@ define([
 		var width = this.img.width(),
 			height = this.img.height(),
 			widthDiff = width - (height - height * .1) * this.imgRatio;
-		
+
 		this.img.css({
 			width: (height - height * .1) * this.imgRatio,
 			height: height - height * .1,
