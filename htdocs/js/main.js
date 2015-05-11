@@ -34,7 +34,7 @@ require([
 		var editor = new Editor($('#code_container'));
 		editor.event.bind({ 'editor:preview': loadPreview,
 		                    'editor:save'   : save });
-		
+
 		editor.openFile('', score.code);
 
 		var mainHeight = $(window).height() - $('#header').outerHeight();
@@ -60,7 +60,7 @@ require([
 		});
 
 		var preview = new Preview($('#preview_container'), score.id);
-	
+
 		$('#preview_button').click(loadPreview);
 
 		var capitalized = { unstable: 'Unstable', stable: 'Stable' };
@@ -77,19 +77,7 @@ require([
 		});
 
 		$('#save_button').click(save);
-
-		$('#share_button').click(function() {
-			$('#share_menu').toggle();
-		});
-		$('#share_menu .close').click(function() {
-			$('#share_menu').hide();
-		});
-		$('#share_url').val(window.location.href).focus(function() { $(this).select(); });
-		$('.facebook_share_button').click(function() {
-			newWindow = window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href) + '&t=' + encodeURIComponent('LilyPond Score'), 'Share', 'width=660,height=380');
-			if (window.focus) newWindow.focus();
-			return false;
-		});
+		$('#reset_button').click(editor.reset.bind(editor));
 
 		if (editor.getValue()) loadPreview();
 
