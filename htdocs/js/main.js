@@ -1,6 +1,14 @@
 require.config({
+	shim: {
+		'bootstrap': {
+			deps: [
+				'jquery'
+			]
+		}
+	},
 	paths: {
-		'jquery': 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min'
+		jquery: 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min',
+		bootstrap: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min'
 	}
 });
 
@@ -8,16 +16,17 @@ require([
 	'jquery',
 	'Preview',
 	'Editor',
-	'plugins/splitter',
-	'plugins/tipTip'
+	'bootstrap'
 ], function($, Preview, Editor) {
 	$(function() {
+		var versionState = score.version || 'stable';
+
 		function loadPreview() {
-			preview.load({code: editor.getValue(), version: $('#version_select_menu input[name=version]:checked').val()});
+			preview.load({code: editor.getValue(), version: versionState});
 		}
 
 		function save() {
-			$.post('/save', {id: score.id, code: editor.getValue(), version: $('#version_select_menu input[name=version]:checked').val()}, function(response) {
+			$.post('/save', {id: score.id, code: editor.getValue(), version: versionState}, function(response) {
 				window.location = '/' + response.id + '/' + response.revision;
 			}, 'json');
 		}
@@ -29,52 +38,42 @@ require([
 		editor.openFile('', score.code);
 
 		var mainHeight = $(window).height() - $('#header').outerHeight();
-				
-		$('#main').css({height: mainHeight + 'px', width: $(window).width()});
-		$('.CodeMirror').css({height: mainHeight + 'px'});
-		$('.CodeMirror-gutters').css({height: mainHeight + 'px'});
-		$('#preview_container').css({height: mainHeight + 'px'});
-		$('#code_container').css({width: $('#code_container').parent().width() + 'px', left: '0px'});
-		$('#donate_button_label').css({width: $('#header').width() - $('donate_button_label').outerWidth() - $('#header h1').outerWidth() - $('#actions').outerWidth() - 200 + 'px'});
+		var mainWidth  = $(window).width();
+		// Corresponds with Bootstrap's xs
+		var xs = mainWidth < 768;
+
+		$('a.noop-a').click(function (e) {
+			e.preventDefault();
+		});
+		$('.CodeMirror').css({height: (xs ? mainHeight * (5/12) : mainHeight) + 'px'});
+		$('.CodeMirror-gutters').css({height: (xs ? mainHeight * (5/12) : mainHeight) + 'px'});
+		$('#preview_container').css({height: (xs ? mainHeight * (7/12) : mainHeight) + 'px'});
 		$(window).resize(function() {
 			var mainHeight = $(window).height() - $('#header').outerHeight();
+			var mainWidth  = $(window).width();
+			// Corresponds with Bootstrap's xs
+			var xs = mainWidth < 768;
 
-			$('#main').css({width: $(window).width()});
-			$('#preview_container').css({width: $('#main').width() - $('#left_pane').width() - $('.vsplitbar').width()});
-			$('#code_container').css({width: $('#code_container').parent().width() + 'px', left: '0px'});
-			$('#preview_container, .vsplitbar, #main, #left_pane').css({height: mainHeight + 'px'});
-			$('.CodeMirror').css({height: mainHeight + 'px'});
-			$('.CodeMirror-gutters').css({height: mainHeight + 'px'});
-			$('#donate_button_label').css({width: $('#header').width() - $('donate_button_label').outerWidth() - $('#header h1').outerWidth() - $('#actions').outerWidth() - 200 + 'px'});
+			$('.CodeMirror').css({height: (xs ? mainHeight * (5/12) : mainHeight) + 'px'});
+			$('.CodeMirror-gutters').css({height: (xs ? mainHeight * (5/12) : mainHeight) + 'px'});
+			$('#preview_container').css({height: (xs ? mainHeight * (7/12) : mainHeight) + 'px'});
 		});
-
-		var previewWidth = $(window).width() * .4;
-		if (previewWidth < 730) previewWidth = 730;
-		$('#main').splitter({
-			sizeRight: previewWidth
-		});
-
-		$('#version_select_menu input').val([score.version]);
 
 		var preview = new Preview($('#preview_container'), score.id);
 	
 		$('#preview_button').click(loadPreview);
 
-		var open = false;
-		$('#preview_options_button').click(function(e) {
-			open = !open;
-			$(this).addClass('active');
-			$('#version_select_menu').show();
-			if (open) {
-				e.stopPropagation();
-				return false;
-			}
-		});
-		$('#version_stable, #version_unstable').change(function() { loadPreview(); });
-		$(document).click(function() {
-			open = false;
-			$('#version_select_menu').hide();
-			$('#preview_options_button').removeClass('active');
+		var capitalized = { unstable: 'Unstable', stable: 'Stable' };
+		$('#version_btn')
+			.html('LilyPond ' + capitalized[versionState] +
+				' <span class="caret"></span>');
+
+		$('#version_selection a').click(function() {
+			versionState = this.dataset.version;
+			$('#version_btn')
+				.html('LilyPond ' + capitalized[versionState] +
+					' <span class="caret"></span>');
+			loadPreview();
 		});
 
 		$('#save_button').click(save);
@@ -92,8 +91,8 @@ require([
 			return false;
 		});
 
-		$('#preview_button, #save_button').tipTip({ delay: 0 });
-		
 		if (editor.getValue()) loadPreview();
+
+		$('[data-toggle="tooltip"]').tooltip({ html: true });
 	});
 });
