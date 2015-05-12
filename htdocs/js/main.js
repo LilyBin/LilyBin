@@ -65,13 +65,13 @@ require([
 
 		var capitalized = { unstable: 'Unstable', stable: 'Stable' };
 		$('#version_btn')
-			.html('LilyPond ' + capitalized[versionState] +
+			.html(capitalized[versionState] +
 				' <span class="caret"></span>');
 
 		$('#version_selection a').click(function() {
 			versionState = this.dataset.version;
 			$('#version_btn')
-				.html('LilyPond ' + capitalized[versionState] +
+				.html(capitalized[versionState] +
 					' <span class="caret"></span>');
 			loadPreview();
 		});

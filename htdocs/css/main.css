@@ -58,6 +58,18 @@
 	-webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
 	box-shadow: 0 6px 12px rgba(0,0,0,.175);
 }
+@media screen and (max-width: 400px) {
+	.navbar-unresponsive .navbar-nav > li > a {
+		padding: 10px;
+	}
+	.navbar-unresponsive .navbar-brand {
+		margin-left: 0;
+	}
+	.navbar-unresponsive .container-fluid {
+		padding-left: 0;
+		padding-right: 0;
+	}
+}
 
 /* Bigger brand image (20px -> 30px) */
 .navbar-brand.navbar-brand-img {
