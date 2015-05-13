@@ -76,7 +76,7 @@
 	padding: 10px 15px;
 }
 
-#code_container {
+#code_container, #preview_container {
 	padding: 0;
 }
 
