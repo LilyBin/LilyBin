@@ -84,10 +84,13 @@ app.post('/save', function(req, res) {
 	}).catch(console.error);
 });
 
+var mkdirp = Promise.promisify(require('mkdirp'));
+var lilypond = require('./lib/lilypond');
 app.post('/prepare_preview', function(req, res) {
 	const code = req.body.code,
-		version = req.body.version || 'stable';
+		version = (req.body.version === 'unstable') ? 'unstable' : 'stable';
 	var id,
+		tempDir,
 		tempSrc,
 		response = {};
 
@@ -96,27 +99,27 @@ app.post('/prepare_preview', function(req, res) {
 		getNewId().then(fulfill, reject);
 	}).then(function(_id) {
 		id = _id;
-		tempSrc = __dirname + '/render/' + _id + '.ly';
+		tempDir = __dirname + '/render/' + _id;
+		tempSrc = tempDir + '/score.ly';
 		response.id = _id;
 	}).then(function() {
-		return fs.writeFileAsync(tempSrc, code).catch(function (err) {
+		return mkdirp(tempDir)
+		.then(function() {
+			fs.writeFileAsync(tempSrc, code);
+		}).catch(function (err) {
 			return Promise.reject({ text: 'Cannot write file', err: err});
 		});
 	}).then(function() {
-		return exec(
-			config.bin[version] +
-			' --formats=pdf,png' +
-			' -o ' + __dirname + '/render/' + id +
-			' ' + tempSrc
-		).then(function (ret) {
-			response.output = ret.stderr;
+		return lilypond(tempSrc, version)
+		.then(function (ret) {
+			response.output = ret;
 			return fs.statAsync(
-				__dirname + '/render/' + id + '.png'
+				__dirname + '/render/' + id + '/rendered' + '.png'
 			).then(function () {
 				response.pages = 1;
 				return fs.renameAsync(
-					__dirname + '/render/' + id + '.png',
-					__dirname + '/render/' + id + '-page1' + '.png'
+					__dirname + '/render/' + id + '/rendered' + '.png',
+					__dirname + '/render/' + id + '/rendered' + '-page1' + '.png'
 				).catch(function (err) {
 					return Promise.reject({ text: 'file rename failed', err: err });
 				});
@@ -126,7 +129,7 @@ app.post('/prepare_preview', function(req, res) {
 				});
 			})
 		}, function (err) {
-			response.error = err.stderr;
+			response.error = err;
 			response.pages = 0;
 		});
 	}).then(function () {
@@ -145,20 +148,20 @@ app.get('/preview', function(req, res) {
 	const id = req.query.id,
 		page = req.query.page || 1;
 
-	res.sendFile(__dirname + '/render/' + id + '-page' + page + '.png');
+	res.sendFile(__dirname + '/render/' + id + '/rendered' + '-page' + page + '.png');
 });
 
 
 app.get('/downloadPDF', function(req, res) {
 	const id = req.query.id;
 
-	res.download(__dirname + '/render/' + id + '.pdf', 'score.pdf');
+	res.download(__dirname + '/render/' + id + '/rendered' + '.pdf', 'score.pdf');
 });
 
 app.get('/downloadMidi', function(req, res) {
 	const id = req.query.id;
 
-	res.download(__dirname + '/render/' + id + '.midi', 'score.midi');
+	res.download(__dirname + '/render/' + id + '/rendered' + '.midi', 'score.midi');
 });
 
 app.get('/:id?/:revision?', function(req, res, next) {
