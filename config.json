@@ -1,6 +1,0 @@
-{
-	"bin": {
-		"stable": "/home/ubuntu/bin/lilypond",
-		"unstable": "/home/ubuntu/lilypond_unstable/bin/lilypond"
-	}
-}

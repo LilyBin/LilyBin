@@ -40,9 +40,6 @@ app.set('view engine', 'html');
 // Default score
 const defaultScore = fs.readFileSync(__dirname + '/default.ly', 'utf8');
 
-// Get config options
-const config = require('./config.json');
-
 // DB
 const scores = require('./lib/db');
 
