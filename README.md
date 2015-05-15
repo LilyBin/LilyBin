@@ -1,17 +1,22 @@
 LilyBin
 =======
 
-LiliyBin is a web-based [LilyPond](http://www.lilypond.org) editor. See it live at [http://lilybin.com](http://lilybin.com).
+LilyBin is a web-based [LilyPond](http://www.lilypond.org) editor. See it live
+at [http://lilybin.com](http://lilybin.com).
 
 Submit bugs and feature requests as GitHub issues.
 
-### To run locally
+### Running LilyBin
 
-Install Node.js and LilyPond before running LilyBin.
+Install [Node.js](https://nodejs.org/) and
+[Docker](https://docs.docker.com/installation/).
 
 Clone the repository and run `npm install` to download required node modules.
 
-Next, edit config.json so that `bin.stable` is the path to the "stable" LilyPond binary,
-and `bin.unstable` is the path to the unstable binary. Launch LilyBin
-with `node server.js`. Navigate to http://localhost:3001, and you should
-be presented with an editor pane and a successfully rendered score.
+Run `docker build -t lilybin .` to create a Docker image named lilybin based on
+the included Dockerfile. (LilyBin uses Docker to compile scores in a sandboxed
+environment. It looks for a Docker image named lilybin and runs each compilation
+in a new container.)
+
+Launch LilyBin with `node server.js`. Navigate to http://localhost:3001, and you
+should be presented with an editor pane and a successfully rendered score.
