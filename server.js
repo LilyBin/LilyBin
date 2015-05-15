@@ -85,8 +85,7 @@ app.post('/save', function(req, res) {
 
 var mkdirp = Promise.promisify(require('mkdirp'));
 app.post('/prepare_preview', function(req, res) {
-	const code = req.body.code,
-		version = (req.body.version === 'unstable') ? 'unstable' : 'stable';
+	const code = req.body.code;
 	var id,
 		tempDir,
 		tempSrc,
@@ -108,7 +107,7 @@ app.post('/prepare_preview', function(req, res) {
 			return Promise.reject({ text: 'Cannot write file', err: err});
 		});
 	}).then(function() {
-		return lilypond.compile(tempDir, 'score.ly', version)
+		return lilypond.compile(tempDir, 'score.ly', req.body.version)
 		.then(function (ret) {
 			response.output = ret;
 			return fs.statAsync(
