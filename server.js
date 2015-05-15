@@ -103,7 +103,7 @@ app.post('/prepare_preview', function(req, res) {
 	}).then(function() {
 		return mkdirp(tempDir)
 		.then(function() {
-			fs.writeFileAsync(tempSrc, code);
+			return fs.writeFileAsync(tempSrc, code);
 		}).catch(function (err) {
 			return Promise.reject({ text: 'Cannot write file', err: err});
 		});
