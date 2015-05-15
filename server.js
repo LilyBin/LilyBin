@@ -108,7 +108,7 @@ app.post('/prepare_preview', function(req, res) {
 			return Promise.reject({ text: 'Cannot write file', err: err});
 		});
 	}).then(function() {
-		return lilypond.compile(tempSrc, version)
+		return lilypond.compile(tempDir, 'score.ly', version)
 		.then(function (ret) {
 			response.output = ret;
 			return fs.statAsync(
