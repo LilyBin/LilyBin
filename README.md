@@ -1,6 +1,8 @@
 LilyBin
 =======
 
+[![Dependency status](https://img.shields.io/david/trevordixon/LilyBin.svg)](https://david-dm.org/trevordixon/LilyBin)
+
 LilyBin is a web-based [LilyPond](http://www.lilypond.org) editor. See it live
 at [http://lilybin.com](http://lilybin.com).
 
