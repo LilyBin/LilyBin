@@ -189,10 +189,6 @@ function handleMain(req, res, next) {
 			console.error(err);
 		}).catch(console.error);
 }
-lilypond.versions().then(function(_versions) {
-	versions = _versions;
-	app.get('/:id?/:revision?', handleMain);
-});
 
 app.get('/raw/:id/:revision?', function(req, res, next) {
 	const id = req.params.id,
@@ -211,9 +207,14 @@ app.get('/raw/:id/:revision?', function(req, res, next) {
 		}).catch(console.error);
 });
 
-const port = process.env.LISTEN_PORT || 3001;
-app.listen(port);
-console.log('Listening on port ' + port + '.');
+lilypond.versions().then(function(_versions) {
+	versions = _versions;
+	app.get('/:id?/:revision?', handleMain);
+
+	const port = process.env.LISTEN_PORT || 3001;
+	app.listen(port);
+	console.log('Listening on port ' + port + '.');
+});
 
 function countPages(id) {
 	const re = new RegExp(id + '-page.*\.png');
