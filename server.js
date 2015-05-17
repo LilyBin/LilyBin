@@ -108,13 +108,13 @@ app.post('/prepare_preview', function(req, res) {
 		.then(function (ret) {
 			response.output = ret;
 			return fs.accessAsync(
-				__dirname + '/render/' + id + '/rendered' + '.png',
+				__dirname + '/render/' + id + '/rendered.png',
 				fs.R_OK
 			).then(function () {
 				response.pages = 1;
 				return fs.renameAsync(
-					__dirname + '/render/' + id + '/rendered' + '.png',
-					__dirname + '/render/' + id + '/rendered' + '-page1' + '.png'
+					__dirname + '/render/' + id + '/rendered.png',
+					__dirname + '/render/' + id + '/rendered-page1' + '.png'
 				).catch(function (err) {
 					return Promise.reject({ text: 'file rename failed', err: err });
 				});
