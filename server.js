@@ -9,6 +9,8 @@ const fs = Promise.promisifyAll(require('fs')),
 const express = require('express'),
 	app = express();
 
+const renderDir = __dirname + '/render/';
+
 var lilypond = require('./lib/lilypond');
 
 // Serve static files from ./htdocs
@@ -93,7 +95,7 @@ app.post('/prepare_preview', function(req, res) {
 		getNewId().then(fulfill, reject);
 	}).then(function(_id) {
 		id = _id;
-		tempDir = __dirname + '/render/' + _id;
+		tempDir = renderDir + _id;
 		tempSrc = tempDir + '/score.ly';
 		response.id = _id;
 	}).then(function() {
@@ -108,13 +110,13 @@ app.post('/prepare_preview', function(req, res) {
 		.then(function (ret) {
 			response.output = ret;
 			return fs.accessAsync(
-				__dirname + '/render/' + id + '/rendered.png',
+				renderDir + id + '/rendered.png',
 				fs.R_OK
 			).then(function () {
 				response.pages = 1;
 				return fs.renameAsync(
-					__dirname + '/render/' + id + '/rendered.png',
-					__dirname + '/render/' + id + '/rendered-page1' + '.png'
+					renderDir + id + '/rendered.png',
+					renderDir + id + '/rendered-page1' + '.png'
 				).catch(function (err) {
 					return Promise.reject({ text: 'file rename failed', err: err });
 				});
@@ -143,20 +145,20 @@ app.get('/preview', function(req, res) {
 	const id = req.query.id,
 		page = req.query.page || 1;
 
-	res.sendFile(__dirname + '/render/' + id + '/rendered' + '-page' + page + '.png');
+	res.sendFile(renderDir + id + '/rendered' + '-page' + page + '.png');
 });
 
 
 app.get('/downloadPDF', function(req, res) {
 	const id = req.query.id;
 
-	res.download(__dirname + '/render/' + id + '/rendered' + '.pdf', 'score.pdf');
+	res.download(renderDir + id + '/rendered' + '.pdf', 'score.pdf');
 });
 
 app.get('/downloadMidi', function(req, res) {
 	const id = req.query.id;
 
-	res.download(__dirname + '/render/' + id + '/rendered' + '.midi', 'score.midi');
+	res.download(renderDir + id + '/rendered' + '.midi', 'score.midi');
 });
 
 var versions;
@@ -218,7 +220,7 @@ lilypond.versions().then(function(_versions) {
 
 function countPages(id) {
 	const re = new RegExp(id + '-page.*\.png');
-	return fs.readdirAsync(__dirname + '/render').then(function (files) {
+	return fs.readdirAsync(renderDir).then(function (files) {
 		return files.filter(function (f) {
 			return re.test(f);
 		}).length;
