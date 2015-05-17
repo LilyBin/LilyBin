@@ -113,3 +113,12 @@
 	overflow: auto;
 	display: none;
 }
+
+@media screen and (min-width: 992px) {
+  .btn-sm-md {
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+  }
+}
