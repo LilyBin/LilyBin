@@ -123,8 +123,8 @@
 	display: none;
 }
 
-@media screen and (min-width: 992px) {
-  .btn-sm-md {
+@media screen and (max-width: 991px) {
+  .btn-sm-sm {
     padding: 5px 10px;
     font-size: 12px;
     line-height: 1.5;
