@@ -58,12 +58,21 @@
 	-webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
 	box-shadow: 0 6px 12px rgba(0,0,0,.175);
 }
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 767px) {
+	.navbar-unresponsive {
+		min-height: 40px;
+	}
 	.navbar-unresponsive .navbar-nav > li > a {
 		padding: 10px;
 	}
 	.navbar-unresponsive .navbar-brand {
+		padding: 10px;
 		margin-left: 0;
+		font-size: 14px;
+		height: 40px;
+	}
+	.navbar-unresponsive .navbar-brand-img {
+		display: none;
 	}
 	.navbar-unresponsive .container-fluid {
 		padding-left: 0;
