@@ -23,5 +23,6 @@ and runs each compilation in a new container.)
 The Dockerfile used to build that image is located at
 [trevordixon/docker-lilypond](https://github.com/trevordixon/docker-lilypond).
 
-Launch LilyBin with `node server.js`. Navigate to http://localhost:3001, and you
-should be presented with an editor pane and a successfully rendered score.
+Launch LilyBin with `node server.js`. Navigate to
+[http://localhost:3001](http://localhost:3001), and you should be presented
+with an editor pane and a successfully rendered score.
