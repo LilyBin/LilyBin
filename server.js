@@ -9,7 +9,7 @@ const fs = Promise.promisifyAll(require('fs')),
 const express = require('express'),
 	app = express();
 
-const renderDir = __dirname + '/render/';
+const BUCKET = 'https://s3-us-west-2.amazonaws.com/lilybin-scores/';
 
 var lilypond = require('./lib/lilypond');
 
@@ -79,56 +79,25 @@ app.post('/save', function(req, res) {
 	}).catch(console.error);
 });
 
-var mkdirp = Promise.promisify(require('mkdirp'));
 app.post('/prepare_preview', function(req, res) {
-	const code = req.body.code;
-	var id,
-		tempDir,
-		tempSrc,
-		response = {};
+	Promise.resolve(null).bind({id: req.body.id}).then(function() {
+		if (this.id) return;
 
-	new Promise(function(fulfill, reject) {
-		if (req.body.id) return fulfill(req.body.id);
-		getNewId().then(fulfill, reject);
-	}).then(function(_id) {
-		id = _id;
-		tempDir = renderDir + _id;
-		tempSrc = tempDir + '/score.ly';
-		response.id = _id;
-	}).then(function() {
-		return mkdirp(tempDir)
-		.then(function() {
-			return fs.writeFileAsync(tempSrc, code);
-		}).catch(function (err) {
-			return Promise.reject({ text: 'Cannot write file', err: err});
+		return getNewId().bind(this).then(function(id) {
+			this.id = id;
 		});
 	}).then(function() {
-		return lilypond.compile(tempDir, 'score.ly', req.body.version)
-		.then(function (ret) {
-			response.output = ret;
-			return (fs.accessAsync || fs.statAsync)(
-				renderDir + id + '/rendered.png'
-			).then(function () {
-				response.pages = 1;
-				return fs.renameAsync(
-					renderDir + id + '/rendered.png',
-					renderDir + id + '/rendered-page1' + '.png'
-				).catch(function (err) {
-					return Promise.reject({ text: 'file rename failed', err: err });
-				});
-			}, function () {
-				return countPages(id, 1).then(function (pages) {
-					response.pages = pages;
-				});
-			})
+		return lilypond.compile(
+			this.id, req.body.code, req.body.version
+		).bind(this).then(function (ret) {
+			this.output = ret.stderr
+			this.pages = ret.pages
 		}, function (err) {
-			response.error = err;
-			response.pages = 0;
+			this.error = err.message;
+			this.pages = 0;
 		});
 	}).then(function () {
-		// res.send.bind(res, response) doesn't work because Express.js supports
-		// a two-argument form of res.send.
-		res.send(response);
+		res.send(this);
 	}).catch(function (err) {
 		res.status(500).send('Internal server error: ' +
 			(err.text || err.message || '')
@@ -139,22 +108,23 @@ app.post('/prepare_preview', function(req, res) {
 
 app.get('/preview', function(req, res) {
 	const id = req.query.id,
-		page = req.query.page || 1;
+		page = req.query.page || 1,
+		cacheBuster = req.query.t ? '?t=' + req.query.t : '';
 
-	res.sendFile(renderDir + id + '/rendered-page' + page + '.png');
+	res.redirect(BUCKET + id + '-page' + page + '.png' + cacheBuster);
 });
 
 
 app.get('/downloadPDF', function(req, res) {
 	const id = req.query.id;
 
-	res.download(renderDir + id + '/rendered.pdf', 'score.pdf');
+	res.redirect(BUCKET + id + '.pdf');
 });
 
 app.get('/downloadMidi', function(req, res) {
 	const id = req.query.id;
 
-	res.download(renderDir + id + '/rendered.midi', 'score.midi');
+	res.redirect(BUCKET + id + '.midi');
 });
 
 var versions;
@@ -211,10 +181,3 @@ lilypond.versions().then(function(_versions) {
 	app.listen(port);
 	console.log('Listening on port ' + port + '.');
 });
-
-function countPages(id) {
-	const re = new RegExp('rendered-page.*\.png');
-	return fs.readdirAsync(renderDir + id).then(function (files) {
-		return files.filter(re.test.bind(re)).length;
-	});
-}
