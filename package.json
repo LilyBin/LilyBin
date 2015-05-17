@@ -9,7 +9,7 @@
     "codemirror": "^5.2.0",
     "dockerode": "^2.1.3",
     "express": "^4.12.3",
-    "level": "^0.19.1",
+    "level": "^1.0.0-0",
     "mkdirp": "^0.5.1",
     "normalize.css": "^3.0.3",
     "requirejs": "^2.1.17",
