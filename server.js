@@ -145,20 +145,20 @@ app.get('/preview', function(req, res) {
 	const id = req.query.id,
 		page = req.query.page || 1;
 
-	res.sendFile(renderDir + id + '/rendered' + '-page' + page + '.png');
+	res.sendFile(renderDir + id + '/rendered-page' + page + '.png');
 });
 
 
 app.get('/downloadPDF', function(req, res) {
 	const id = req.query.id;
 
-	res.download(renderDir + id + '/rendered' + '.pdf', 'score.pdf');
+	res.download(renderDir + id + '/rendered.pdf', 'score.pdf');
 });
 
 app.get('/downloadMidi', function(req, res) {
 	const id = req.query.id;
 
-	res.download(renderDir + id + '/rendered' + '.midi', 'score.midi');
+	res.download(renderDir + id + '/rendered.midi', 'score.midi');
 });
 
 var versions;
