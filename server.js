@@ -219,10 +219,8 @@ lilypond.versions().then(function(_versions) {
 });
 
 function countPages(id) {
-	const re = new RegExp(id + '-page.*\.png');
-	return fs.readdirAsync(renderDir).then(function (files) {
-		return files.filter(function (f) {
-			return re.test(f);
-		}).length;
+	const re = new RegExp('rendered-page.*\.png');
+	return fs.readdirAsync(renderDir + id).then(function (files) {
+		return files.filter(re.test.bind(re)).length;
 	});
 }
