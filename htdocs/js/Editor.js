@@ -14,12 +14,12 @@ define([
 		this.openFile('', '');
 	}
 	Editor.prototype.openFile = function(path, contents, loadPreview) {
-		var _this = this, codemirrorContainer, codemirrorInstance, li;
+		var codemirrorContainer, li;
 
 		this.container.find('.codemirror_container').hide();
 		this.container.append(codemirrorContainer = $('<div />').addClass('codemirror_container'));
 
-		codemirrorInstance = CodeMirror(codemirrorContainer[0], {
+		this.cm = CodeMirror(codemirrorContainer[0], {
 			value: contents || '',
 			lineNumbers: true,
 			fixedGutter: true,
@@ -33,14 +33,13 @@ define([
 			}
 		});
 
-		codemirrorContainer.data('codemirrorInstance', codemirrorInstance);
 		codemirrorContainer.data('path', path);
 
 		codemirrorContainer.find('.CodeMirror').css({height: $(window).height() - $('#header').outerHeight() + 'px'});
 		if (loadPreview) this.loadPreview();
 	}
 	Editor.prototype.getValue = function() {
-		return this.container.children('.codemirror_container:visible').data('codemirrorInstance').getValue();
+		return this.cm.getValue();
 	};
 	Editor.prototype.loadPreview = function() {
 		this.event.trigger('editor:preview', this.getValue);
@@ -50,8 +49,7 @@ define([
 		this.event.trigger('editor:save', this.getValue);
 	};
 	Editor.prototype.reset = function() {
-		var cm = this.container.children('.codemirror_container:visible').data('codemirrorInstance');
-		cm.setValue('');
+		this.cm.setValue('');
 	};
 
 	return Editor;
