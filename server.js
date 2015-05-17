@@ -107,8 +107,9 @@ app.post('/prepare_preview', function(req, res) {
 		return lilypond.compile(tempDir, 'score.ly', req.body.version)
 		.then(function (ret) {
 			response.output = ret;
-			return fs.statAsync(
-				__dirname + '/render/' + id + '/rendered' + '.png'
+			return fs.accessAsync(
+				__dirname + '/render/' + id + '/rendered' + '.png',
+				fs.R_OK
 			).then(function () {
 				response.pages = 1;
 				return fs.renameAsync(
