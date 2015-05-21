@@ -13,11 +13,11 @@ define([
 		this.controls = container.find('.preview_controls');
 
 		var _$ = this.controls.find.bind(this.controls);
-		this.prevButton = _$('prev')
+		this.prevButton = _$('#prev')
 			.click(function() {
 				_this.prevPage();
 			});
-		this.nextButton = _$('next')
+		this.nextButton = _$('#next')
 			.click(function() {
 				_this.nextPage();
 			});
