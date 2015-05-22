@@ -6,7 +6,7 @@
 		<meta property="og:title" content="LilyPond Score">
 		<meta property="og:description" content="LilyPond Score made using LilyBin.">
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-		<script>var score = <%= score %>;</script>
+		<script>var score = <%= JSON.stringify(score) %>;</script>
 		<script data-main="/js/main" src="/js/require.js"></script>
 		<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,800">
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">

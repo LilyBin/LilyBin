@@ -165,10 +165,10 @@ function handleMain(req, res, next) {
 
 	if (!id) {
 		return res.render('index.html', {
-			score: JSON.stringify({
+			score: {
 				id: '',
 				code: defaultScore,
-			}),
+			},
 			versions: versions,
 		});
 	}
@@ -177,7 +177,7 @@ function handleMain(req, res, next) {
 		.then(function (score) {
 			score.id = id;
 			res.render('index.html', {
-				score: JSON.stringify(score), versions: versions});
+				score: score, versions: versions});
 		}).catch(function(err) {
 			if (err.notFound) {
 				return res.status(404).send('Score not found');
