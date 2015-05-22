@@ -161,13 +161,12 @@ app.get('/downloadMidi', function(req, res) {
 var versions;
 function handleMain(req, res, next) {
 	const id = req.params.id,
-		revision = req.params.revision || 1;
+		revision = +req.params.revision || 1;
 
 	if (!id) {
 		return res.render('index.html', {
 			score: JSON.stringify({
 				id: '',
-				revision: '0',
 				code: defaultScore,
 			}),
 			versions: versions,
@@ -177,7 +176,6 @@ function handleMain(req, res, next) {
 	scores.get(id, revision)
 		.then(function (score) {
 			score.id = id;
-			score.revision = revision;
 			res.render('index.html', {
 				score: JSON.stringify(score), versions: versions});
 		}).catch(function(err) {
@@ -191,7 +189,7 @@ function handleMain(req, res, next) {
 
 app.get('/raw/:id/:revision?', function(req, res, next) {
 	const id = req.params.id,
-		revision = req.params.revision || 1;
+		revision = +req.params.revision || 1;
 
 	res.set('Content-Type', 'text/plain');
 	scores.get(id, revision)
