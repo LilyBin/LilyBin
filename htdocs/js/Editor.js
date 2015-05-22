@@ -39,6 +39,12 @@ define([
 	Editor.prototype.getValue = function() {
 		return this.cm.getValue();
 	};
+	Editor.prototype.undo = function() {
+		return this.cm.undo();
+	}
+	Editor.prototype.redo = function() {
+		return this.cm.redo();
+	}
 	Editor.prototype.loadPreview = function() {
 		this.event.trigger('editor:preview');
 	};

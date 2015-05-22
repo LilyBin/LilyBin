@@ -78,8 +78,8 @@ require([
 
 		$('#save_button').click(save);
 		$('#reset_button').click(editor.reset.bind(editor));
-		$('#undo_button').click(editor.cm.undo.bind(editor.cm));
-		$('#redo_button').click(editor.cm.redo.bind(editor.cm));
+		$('#undo_button').click(editor.undo.bind(editor));
+		$('#redo_button').click(editor.redo.bind(editor));
 
 		if (editor.getValue()) loadPreview();
 
