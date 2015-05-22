@@ -11,9 +11,9 @@ define([
 			this.spinner = $('<div />').css({position: 'absolute', width: '100%', height: '100%'}).spinner({ colour: '100,100,100' }).hide()
 		);
 
-		this.openFile('', '');
+		this.openFile('');
 	}
-	Editor.prototype.openFile = function(path, contents, loadPreview) {
+	Editor.prototype.openFile = function(contents, loadPreview) {
 		var codemirrorContainer, li;
 
 		this.container.find('.codemirror_container').hide();
@@ -32,8 +32,6 @@ define([
 				'Ctrl-S': this.save.bind(this)
 			}
 		});
-
-		codemirrorContainer.data('path', path);
 
 		codemirrorContainer.find('.CodeMirror').css({height: $(window).height() - $('#header').outerHeight() + 'px'});
 		if (loadPreview) this.loadPreview();
