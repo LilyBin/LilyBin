@@ -76,7 +76,7 @@ require([
 			loadPreview();
 		});
 
-		$('#save_button').click(save);
+		$('#save_button').click(editor.save.bind(editor));
 		$('#reset_button').click(editor.reset.bind(editor));
 		$('#undo_button').click(editor.undo.bind(editor));
 		$('#redo_button').click(editor.redo.bind(editor));
