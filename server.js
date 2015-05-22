@@ -61,16 +61,14 @@ function getNewId(attempt) {
 }
 
 app.post('/save', function(req, res) {
-	const code = req.body.code;
-	var id;
+	Promise.resolve(null).bind({id: req.body.id}).then(function() {
+		if (this.id) return;
 
-	new Promise(function(fulfill, reject) {
-		if (req.body.id) return fulfill(req.body.id);
-		getNewId().then(fulfill, reject);
-	}).then(function(_id) {
-		id = _id;
+		return getNewId().bind(this).then(function(id) {
+			this.id = id;
+		});
 	}).then(function() {
-		return scores.save(id, code, req.body.version);
+		return scores.save(this.id, req.body.code, req.body.version);
 	}).then(function (info) {
 		res.send(info);
 	}).catch(function (err) {
