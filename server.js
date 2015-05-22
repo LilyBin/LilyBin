@@ -61,8 +61,7 @@ function getNewId(attempt) {
 }
 
 app.post('/save', function(req, res) {
-	const code = req.body.code,
-		version = req.body.version || 'stable';
+	const code = req.body.code;
 	var id;
 
 	new Promise(function(fulfill, reject) {
@@ -71,7 +70,7 @@ app.post('/save', function(req, res) {
 	}).then(function(_id) {
 		id = _id;
 	}).then(function() {
-		return scores.save(id, code, version);
+		return scores.save(id, code, req.body.version);
 	}).then(function (info) {
 		res.send(info);
 	}).catch(function (err) {
