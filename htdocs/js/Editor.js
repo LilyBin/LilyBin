@@ -4,10 +4,10 @@ define([
 	'CodeMirror/mode/stex/stex',
 	'CodeMirror/addon/edit/matchbrackets'
 ], function($, CodeMirror) {
-	function Editor(container, options) {
+	function Editor($container, options) {
 		this.event = $({});
 
-		this.container = $(container).append(
+		this.$container = $container.append(
 			this.spinner = $('<div />').css({position: 'absolute', width: '100%', height: '100%'}).spinner({ colour: '100,100,100' }).hide()
 		);
 
@@ -16,8 +16,8 @@ define([
 	Editor.prototype.openFile = function(contents, loadPreview) {
 		var codemirrorContainer, li;
 
-		this.container.find('.codemirror_container').hide();
-		this.container.append(codemirrorContainer = $('<div />').addClass('codemirror_container'));
+		this.$container.find('.codemirror_container').hide();
+		this.$container.append(codemirrorContainer = $('<div />').addClass('codemirror_container'));
 
 		this.cm = CodeMirror(codemirrorContainer[0], {
 			value: contents || '',
