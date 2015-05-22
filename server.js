@@ -127,8 +127,7 @@ app.get('/downloadMidi', function(req, res) {
 	res.redirect(BUCKET + id + '.midi');
 });
 
-var versions;
-function handleMain(req, res, next) {
+app.get('/:id?/:revision?', function(req, res, next) {
 	const id = req.params.id,
 		revision = +req.params.revision || 1;
 
@@ -138,15 +137,13 @@ function handleMain(req, res, next) {
 				id: '',
 				code: defaultScore,
 			},
-			versions: versions,
 		});
 	}
 
 	scores.get(id, revision)
 		.then(function (score) {
 			score.id = id;
-			res.render('index.html', {
-				score: score, versions: versions});
+			res.render('index.html', {score: score});
 		}).catch(function(err) {
 			if (err.notFound) {
 				return res.status(404).send('Score not found');
@@ -154,7 +151,7 @@ function handleMain(req, res, next) {
 			res.status(500).send('Internal server error');
 			console.error(err);
 		}).catch(console.error);
-}
+});
 
 app.get('/raw/:id/:revision?', function(req, res, next) {
 	const id = req.params.id,
@@ -173,11 +170,6 @@ app.get('/raw/:id/:revision?', function(req, res, next) {
 		}).catch(console.error);
 });
 
-lilypond.versions().then(function(_versions) {
-	versions = _versions;
-	app.get('/:id?/:revision?', handleMain);
-
-	const port = process.env.LISTEN_PORT || 3001;
-	app.listen(port);
-	console.log('Listening on port ' + port + '.');
-});
+const port = process.env.LISTEN_PORT || 3001;
+app.listen(port);
+console.log('Listening on port ' + port + '.');

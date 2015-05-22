@@ -34,6 +34,11 @@ require([
 			loadPreview();
 		});
 
+		$.get('https://s3-us-west-2.amazonaws.com/lilybin-tarballs/versions.json', function(data) {
+			$('#version_selection a[data-version="stable"]')  .append(' (' + data.stable   + ')');
+			$('#version_selection a[data-version="unstable"]').append(' (' + data.unstable + ')');
+		});
+
 		function loadPreview() {
 			preview.load({code: editor.getValue(), version: versionState});
 		}
