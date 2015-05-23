@@ -45,18 +45,18 @@ require([
 		$('a.noop-a').click(function (e) {
 			e.preventDefault();
 		});
-		$('.CodeMirror').css({height: (xs ? mainHeight * (5/12) : mainHeight) + 'px'});
-		$('.CodeMirror-gutters').css({height: (xs ? mainHeight * (5/12) : mainHeight) + 'px'});
-		$('#preview_container').css({height: (xs ? mainHeight * (7/12) : mainHeight) + 'px'});
+		var cm   = $('.CodeMirror, .CodeMirror-gutters')
+			.css({height: (xs ? mainHeight * (5/12) : mainHeight) + 'px'});
+		var main = $('#main').children()
+			.css({height: (xs ? mainHeight * (7/12) : mainHeight) + 'px'});
 		$(window).resize(function() {
 			var mainHeight = $(window).height() - $('#header').outerHeight();
 			var mainWidth  = $(window).width();
 			// Corresponds with Bootstrap's xs
 			var xs = mainWidth < 768;
 
-			$('.CodeMirror').css({height: (xs ? mainHeight * (5/12) : mainHeight) + 'px'});
-			$('.CodeMirror-gutters').css({height: (xs ? mainHeight * (5/12) : mainHeight) + 'px'});
-			$('#preview_container').css({height: (xs ? mainHeight * (7/12) : mainHeight) + 'px'});
+			cm  .css({height: (xs ? mainHeight * (5/12) : mainHeight) + 'px'});
+			main.css({height: (xs ? mainHeight * (7/12) : mainHeight) + 'px'});
 		});
 
 		var preview = new Preview($('#preview_container'), score.id);
