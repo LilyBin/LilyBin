@@ -49,14 +49,20 @@ require([
 			.css({height: (xs ? mainHeight * (5/12) : mainHeight) + 'px'});
 		var main = $('#main').children()
 			.css({height: (xs ? mainHeight * (7/12) : mainHeight) + 'px'});
-		$(window).resize(function() {
-			var mainHeight = $(window).height() - $('#header').outerHeight();
-			var mainWidth  = $(window).width();
-			// Corresponds with Bootstrap's xs
-			var xs = mainWidth < 768;
 
-			cm  .css({height: (xs ? mainHeight * (5/12) : mainHeight) + 'px'});
-			main.css({height: (xs ? mainHeight * (7/12) : mainHeight) + 'px'});
+		var timer;
+		$(window).resize(function() {
+			if (timer) clearTimeout(timer);
+
+			timer = setTimeout(function() {
+				var mainHeight = $(window).height() - $('#header').outerHeight();
+				var mainWidth  = $(window).width();
+				// Corresponds with Bootstrap's xs
+				var xs = mainWidth < 768;
+
+				cm  .css({height: (xs ? mainHeight * (5/12) : mainHeight) + 'px'});
+				main.css({height: (xs ? mainHeight * (7/12) : mainHeight) + 'px'});
+			}, 200);
 		});
 
 		var preview = new Preview($('#preview_container'), score.id);
