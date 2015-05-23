@@ -107,8 +107,7 @@ app.post('/prepare_preview', function(req, res) {
 		.then(function (ret) {
 			response.output = ret;
 			return (fs.accessAsync || fs.statAsync)(
-				renderDir + id + '/rendered.png',
-				fs.R_OK
+				renderDir + id + '/rendered.png'
 			).then(function () {
 				response.pages = 1;
 				return fs.renameAsync(
