@@ -93,6 +93,6 @@ require([
 
 		if (editor.getValue()) loadPreview();
 
-		$('[data-toggle="tooltip"]').tooltip({ html: true });
+		$('[data-toggle="tooltip"]').tooltip({ html: true, placement: 'bottom' });
 	});
 });
