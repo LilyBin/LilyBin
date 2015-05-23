@@ -106,7 +106,7 @@ app.post('/prepare_preview', function(req, res) {
 		return lilypond.compile(tempDir, 'score.ly', req.body.version)
 		.then(function (ret) {
 			response.output = ret;
-			return fs.accessAsync(
+			return (fs.accessAsync || fs.statAsync)(
 				renderDir + id + '/rendered.png',
 				fs.R_OK
 			).then(function () {
