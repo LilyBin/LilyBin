@@ -21,6 +21,19 @@ require([
 	$(function() {
 		var versionState = score.version || 'stable';
 
+		var capitalized = { unstable: 'Unstable', stable: 'Stable' };
+		$('#version_btn')
+			.html(capitalized[versionState] +
+				' <span class="caret"></span>');
+
+		$('#version_selection a').click(function() {
+			versionState = this.dataset.version;
+			$('#version_btn')
+				.html(capitalized[versionState] +
+					' <span class="caret"></span>');
+			loadPreview();
+		});
+
 		function loadPreview() {
 			preview.load({code: editor.getValue(), version: versionState});
 		}
@@ -72,19 +85,6 @@ require([
 		var preview = new Preview($('#preview_container'), score.id);
 
 		$('#preview_button').click(loadPreview);
-
-		var capitalized = { unstable: 'Unstable', stable: 'Stable' };
-		$('#version_btn')
-			.html(capitalized[versionState] +
-				' <span class="caret"></span>');
-
-		$('#version_selection a').click(function() {
-			versionState = this.dataset.version;
-			$('#version_btn')
-				.html(capitalized[versionState] +
-					' <span class="caret"></span>');
-			loadPreview();
-		});
 
 		$('#save_button').click(editor.save.bind(editor));
 		$('#reset_button').click(editor.reset.bind(editor));
