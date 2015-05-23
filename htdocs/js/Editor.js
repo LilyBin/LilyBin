@@ -7,20 +7,11 @@ define([
 	function Editor($container, options) {
 		this.event = $({});
 
-		this.$container = $container.append(
+		this.$container = $container.prepend(
 			this.spinner = $('<div />').css({position: 'absolute', width: '100%', height: '100%'}).spinner({ colour: '100,100,100' }).hide()
 		);
-
-		this.openFile('');
-	}
-	Editor.prototype.openFile = function(contents, loadPreview) {
-		var codemirrorContainer, li;
-
-		this.$container.find('.codemirror_container').hide();
-		this.$container.append(codemirrorContainer = $('<div />').addClass('codemirror_container'));
-
-		this.cm = CodeMirror(codemirrorContainer[0], {
-			value: contents || '',
+		this.textarea = document.getElementById('code');
+		this.cm = CodeMirror.fromTextArea(this.textarea, {
 			lineNumbers: true,
 			fixedGutter: true,
 			matchBrackets: true,
@@ -32,12 +23,14 @@ define([
 				'Ctrl-S': this.save.bind(this)
 			}
 		});
-
-		codemirrorContainer.find('.CodeMirror').css({height: $(window).height() - $('#header').outerHeight() + 'px'});
+	}
+	Editor.prototype.openFile = function(contents, loadPreview) {
+		this.cm.setValue(contents);
 		if (loadPreview) this.loadPreview();
 	}
 	Editor.prototype.getValue = function() {
-		return this.cm.getValue();
+		this.cm.save();
+		return this.textarea.value;
 	};
 	Editor.prototype.undo = function() {
 		return this.cm.undo();

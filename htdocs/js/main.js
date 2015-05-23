@@ -57,8 +57,6 @@ require([
 		editor.event.bind({ 'editor:preview': loadPreview,
 		                    'editor:save'   : save });
 
-		editor.openFile(score.code);
-
 		var mainHeight = $(window).height() - $('#header').outerHeight();
 		var mainWidth  = $(window).width();
 		// Corresponds with Bootstrap's xs
