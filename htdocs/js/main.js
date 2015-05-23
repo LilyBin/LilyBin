@@ -62,6 +62,8 @@ require([
 
 				cm  .css({height: (xs ? mainHeight * (5/12) : mainHeight) + 'px'});
 				main.css({height: (xs ? mainHeight * (7/12) : mainHeight) + 'px'});
+
+				preview.fit();
 			}, 200);
 		});
 
