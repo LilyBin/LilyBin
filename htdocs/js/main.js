@@ -45,9 +45,9 @@ require([
 		$('a.noop-a').click(function (e) {
 			e.preventDefault();
 		});
-		var cm   = $('.CodeMirror, .CodeMirror-gutters')
+		var codeContainer = $('#code_container, .CodeMirror, .CodeMirror-gutters')
 			.css({height: (xs ? mainHeight * (5/12) : mainHeight) + 'px'});
-		var main = $('#main').children()
+		var previewContainer = $('#preview_container')
 			.css({height: (xs ? mainHeight * (7/12) : mainHeight) + 'px'});
 
 		var timer;
@@ -60,8 +60,10 @@ require([
 				// Corresponds with Bootstrap's xs
 				var xs = mainWidth < 768;
 
-				cm  .css({height: (xs ? mainHeight * (5/12) : mainHeight) + 'px'});
-				main.css({height: (xs ? mainHeight * (7/12) : mainHeight) + 'px'});
+				codeContainer
+					.css({height: (xs ? mainHeight * (5/12) : mainHeight) + 'px'});
+				previewContainer
+					.css({height: (xs ? mainHeight * (7/12) : mainHeight) + 'px'});
 
 				preview.fit();
 			}, 200);
