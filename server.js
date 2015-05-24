@@ -7,6 +7,7 @@ const fs = Promise.promisifyAll(require('fs')),
 
 // Express
 const express = require('express'),
+	favicon = require('serve-favicon'),
 	app = express();
 
 const renderDir = __dirname + '/render/';
@@ -14,6 +15,7 @@ const renderDir = __dirname + '/render/';
 var lilypond = require('./lib/lilypond');
 
 // Serve static files from ./htdocs
+app.use(favicon(__dirname + '/htdocs/favicon.ico'));
 app.use(express.static(__dirname + '/htdocs'));
 app.use('/css/', express.static(__dirname + '/node_modules/normalize.css'));
 app.use('/js/', express.static(__dirname + '/node_modules/requirejs'));
