@@ -93,6 +93,11 @@ require([
 
 		if (editor.getValue()) loadPreview();
 
-		$('[data-toggle="tooltip"]').tooltip({ html: true, placement: 'bottom' });
+		// Tooltips are weird-behaving on touch screen devices.
+		// Simply disable them.
+		if (!('ontouchstart' in window) &&
+			(!window.DocumentTouch || !(document instanceof DocumentTouch))) {
+			$('[data-toggle="tooltip"]').tooltip({ html: true, placement: 'bottom' });
+		}
 	});
 });
