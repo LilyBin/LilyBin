@@ -104,7 +104,8 @@ require([
 
 		// Tooltips are weird-behaving on touch screen devices.
 		// Simply disable them.
-		if (!('ontouchstart' in window) &&
+		if (window.innerWidth >= 992 &&
+			!('ontouchstart' in window) &&
 			(!window.DocumentTouch || !(document instanceof DocumentTouch))) {
 			$('[data-toggle="tooltip"]').tooltip({ html: true, placement: 'bottom' });
 		}
