@@ -17,9 +17,6 @@ var lilypond = require('./lib/lilypond');
 // Serve static files from ./htdocs
 app.use(favicon(__dirname + '/htdocs/favicon.ico'));
 app.use(express.static(__dirname + '/htdocs'));
-app.use('/css/', express.static(__dirname + '/node_modules/normalize.css'));
-app.use('/js/', express.static(__dirname + '/node_modules/requirejs'));
-app.use('/js/CodeMirror/', express.static(__dirname + '/node_modules/codemirror'));
 // We don't need the extended features right now.
 app.use(require('body-parser').urlencoded({extended: false}));
 
