@@ -95,7 +95,6 @@
 	position: absolute;
 	bottom: 0;
 	width: 100%;
-	background-color: #FFC;
 	border-top: 4px solid #DDD;
 	max-height: 50%;
 	overflow: auto;

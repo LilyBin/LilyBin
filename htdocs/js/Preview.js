@@ -49,11 +49,11 @@ define([
 
 		this.spinner = $('<div />').css({position: 'absolute', width: '100%', height: '100%'}).spinner({ colour: '100,100,100' }).hide();
 
-		this.error = $('<div />').addClass('preview_error').append($('<h3 />').text('Error'), $('<pre />').addClass('message'));
+		this.error = $('.preview_error');
 
 		this.setupPanning();
 
-		container.append(this.spinner, this.error);
+		this.error.before(this.spinner);
 	}
 	Preview.prototype.prevPage = function() {
 		--this.page;
