@@ -22,7 +22,7 @@ app.use(require('body-parser').urlencoded({extended: false}));
 
 // Trust the proxy
 if (process.env.LILYBIN_PROXY) {
-  app.set('trust proxy', 'loopback');
+	app.set('trust proxy', 'loopback');
 }
 
 // Use underscore.js for templating.
