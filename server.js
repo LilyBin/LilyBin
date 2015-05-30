@@ -2,8 +2,7 @@
 // theoretically wouldn't work in those cases.
 var Promise = require('bluebird');
 const fs = Promise.promisifyAll(require('fs')),
-	path = require('path'),
-	_ = require('underscore');
+	path = require('path');
 
 // Express
 const express = require('express'),
@@ -24,24 +23,6 @@ app.use(require('body-parser').urlencoded({extended: false}));
 if (process.env.LILYBIN_PROXY) {
 	app.set('trust proxy', 'loopback');
 }
-
-// Use underscore.js for templating.
-const cache = {};
-app.engine('html', function (path, options, callback) {
-	if (cache[path]) {
-		return Promise.resolve(options)
-			.then(cache[path])
-			.nodeify(callback);
-	}
-
-	fs.readFileAsync(path, 'utf8')
-		.then(function (str) {
-			cache[path] = _.template(str);
-			return cache[path](options);
-		}).nodeify(callback);
-});
-app.set('views', __dirname + '/views');
-app.set('view engine', 'html');
 
 // Default score
 const defaultScore = fs.readFileSync(__dirname + '/default.ly', 'utf8');
@@ -166,29 +147,7 @@ app.get('/api/:id?/:revision?', function(req, res, next) {
 });
 
 app.get('/:id?/:revision?', function(req, res, next) {
-	const id = req.params.id,
-		revision = +req.params.revision || 1;
-
-	if (!id) {
-		return res.render('index.html', {
-			score: {
-				id: '',
-				code: defaultScore,
-			},
-		});
-	}
-
-	scores.get(id, revision)
-		.then(function (score) {
-			score.id = id;
-			res.render('index.html', {score: score});
-		}).catch(function(err) {
-			if (err.notFound) {
-				return res.status(404).send('Score not found');
-			}
-			res.status(500).send('Internal server error');
-			console.error(err);
-		}).catch(console.error);
+	res.sendFile(__dirname + '/htdocs/index.html');
 });
 
 const port = process.env.LISTEN_PORT || 3001;

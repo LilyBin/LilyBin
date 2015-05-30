@@ -23,7 +23,10 @@ require([
 	'bootstrap'
 ], function($, Preview, Editor) {
 	$(function() {
-		var versionState = score.version || 'stable';
+		var score = {};
+		var versionState = 'stable';
+		var currentPage = window.location.pathname.slice(1);
+		score.id = currentPage.split('/')[1] || '';
 
 		var capitalized = { unstable: 'Unstable', stable: 'Stable' };
 		$('#version_btn')
@@ -98,7 +101,22 @@ require([
 		$('#undo_button').click(editor.undo.bind(editor));
 		$('#redo_button').click(editor.redo.bind(editor));
 
-		if (editor.getValue()) loadPreview();
+		$.get('/api/' + currentPage).done(function(data) {
+			score.version = versionState = data.version;
+			score.code    = data.code;
+			editor.openFile(data.code, !!data.code);
+		}).fail(function(err) {
+			var errorMessage;
+			if (err.responseJSON && err.responseJSON.err) {
+				errorMessage = err.responseJSON.err;
+			} else {
+				errorMessage = err.statusText;
+			}
+			preview.handleResponse({error: errorMessage});
+			$('#preview_button')     .off('click');
+			$('#save_button')        .off('click');
+			$('#version_selection a').off('click');
+		})
 
 		// Tooltips are weird-behaving on touch screen devices.
 		// Simply disable them.
