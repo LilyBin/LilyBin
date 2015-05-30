@@ -126,6 +126,23 @@ app.get('/downloadMidi', function(req, res) {
 	res.redirect(BUCKET + id + '.midi');
 });
 
+app.get('/raw/:id/:revision?', function(req, res, next) {
+	const id = req.params.id,
+		revision = +req.params.revision || 1;
+
+	res.set('Content-Type', 'text/plain');
+	scores.get(id, revision)
+		.then(function (score) {
+			res.send(score.code);
+		}).catch(function(err) {
+			if (err.notFound) {
+				return res.status(404).send('Score not found');
+			}
+			res.status(500).send('Internal server error');
+			console.error(err);
+		}).catch(console.error);
+});
+
 app.get('/:id?/:revision?', function(req, res, next) {
 	const id = req.params.id,
 		revision = +req.params.revision || 1;
@@ -143,23 +160,6 @@ app.get('/:id?/:revision?', function(req, res, next) {
 		.then(function (score) {
 			score.id = id;
 			res.render('index.html', {score: score});
-		}).catch(function(err) {
-			if (err.notFound) {
-				return res.status(404).send('Score not found');
-			}
-			res.status(500).send('Internal server error');
-			console.error(err);
-		}).catch(console.error);
-});
-
-app.get('/raw/:id/:revision?', function(req, res, next) {
-	const id = req.params.id,
-		revision = +req.params.revision || 1;
-
-	res.set('Content-Type', 'text/plain');
-	scores.get(id, revision)
-		.then(function (score) {
-			res.send(score.code);
 		}).catch(function(err) {
 			if (err.notFound) {
 				return res.status(404).send('Score not found');
