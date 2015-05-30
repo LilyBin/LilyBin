@@ -148,6 +148,23 @@ app.get('/raw/:id/:revision?', function(req, res, next) {
 		}).catch(console.error);
 });
 
+app.get('/api/:id?/:revision?', function(req, res, next) {
+	const id = req.params.id,
+		revision = +req.params.revision || 1;
+
+	if (!id) return res.json({code: defaultScore, version: 'stable'})
+	scores.get(id, revision)
+		.then(function (score) {
+			res.json(score);
+		}).catch(function(err) {
+			if (err.notFound) {
+				return res.status(404).json({err: 'Score not found'});
+			}
+			res.status(500).json({err: 'Internal server error'});
+			console.error(err);
+		}).catch(console.error);
+});
+
 app.get('/:id?/:revision?', function(req, res, next) {
 	const id = req.params.id,
 		revision = +req.params.revision || 1;
