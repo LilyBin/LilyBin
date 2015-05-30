@@ -20,6 +20,11 @@ app.use(express.static(__dirname + '/htdocs'));
 // We don't need the extended features right now.
 app.use(require('body-parser').urlencoded({extended: false}));
 
+// Trust the proxy
+if (process.env.LILYBIN_PROXY) {
+  app.set('trust proxy', 'loopback');
+}
+
 // Use underscore.js for templating.
 const cache = {};
 app.engine('html', function (path, options, callback) {
