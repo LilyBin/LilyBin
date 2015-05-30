@@ -86,7 +86,7 @@ app.post('/prepare_preview', function(req, res) {
 			this.id = id;
 		});
 	}).then(function() {
-		return lilypond.compile(
+		return lilypond(
 			this.id, req.body.code, req.body.version
 		).bind(this).then(function (ret) {
 			this.output = ret.stderr
