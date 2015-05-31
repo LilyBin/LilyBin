@@ -29,10 +29,6 @@ require([
 		score.id = currentPage.split('/')[1] || '';
 
 		var capitalized = { unstable: 'Unstable', stable: 'Stable' };
-		$('#version_btn')
-			.html(capitalized[versionState] +
-				' <span class="caret"></span>');
-
 		$('#version_selection a').click(function() {
 			versionState = this.dataset.version;
 			$('#version_btn')
@@ -103,6 +99,10 @@ require([
 
 		$.get('/api/' + currentPage).done(function(data) {
 			score.version = versionState = data.version;
+			$('#version_btn')
+				.html(capitalized[data.version] +
+					' <span class="caret"></span>');
+
 			score.code    = data.code;
 			editor.openFile(data.code, !!data.code);
 		}).fail(function(err) {
