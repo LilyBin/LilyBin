@@ -53,7 +53,11 @@ app.post('/save', function(req, res) {
 			this.id = id;
 		});
 	}).then(function() {
-		return scores.save(this.id, req.body.code, req.body.version);
+		// ES6, I want it NOW!
+		var code = req.body.code;
+		var version = req.body.version;
+		var ttl = req.body.ttl;
+		return scores.save(this.id, code, version, ttl);
 	}).then(function (info) {
 		res.send(info);
 	}).catch(function (err) {

@@ -36,6 +36,12 @@ require([
 					' <span class="caret"></span>');
 			loadPreview();
 		});
+		$('#ttl_sel a').click(function() {
+			var state = this.dataset.minutes;
+			$('#ttl_btn')
+				.data('state', state)
+				.html(this.textContent + ' <span class="caret"></span>');
+		});
 
 		$.get('https://s3-us-west-2.amazonaws.com/lilybin-tarballs/versions.json', function(data) {
 			$('#version_sel a[data-version="stable"]')  .append(' (' + data.stable   + ')');
@@ -53,7 +59,8 @@ require([
 			$.post('/save', {
 				id: score.id,
 				code: editor.getValue(),
-				version: $('#version_btn').data('state')
+				version: $('#version_btn').data('state'),
+				ttl: $('#ttl_btn').data('state')
 			}, function(response) {
 				window.location = '/' + response.id + '/' + response.revision;
 			}, 'json');
