@@ -6,7 +6,6 @@
 		<meta property="og:title" content="LilyPond Score">
 		<meta property="og:description" content="LilyPond Score made using LilyBin.">
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-		<script>var score = <%= JSON.stringify(score) %>;</script>
 		<script data-main="/js/main" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.17/require.min.js"></script>
 		<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,800">
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
@@ -23,7 +22,7 @@
 						<img width="30" height="30" src="/images/ly.svg">
 					</span>
 					<span class="navbar-brand">
-						LilyBin
+						<a href="/">LilyBin</a>
 						<a href="https://github.com/trevordixon/LilyBin" title="View Sources" data-toggle="tooltip"><i class="fa fa-github"></i></a>
 					</span>
 				</div>
@@ -49,7 +48,7 @@
 		</nav>
 		<div id="main">
 			<div class="col-sm-5" id="code_container">
-				<textarea id="code"><%= score.code %></textarea>
+				<textarea id="code"></textarea>
 			</div>
 			<div class="col-sm-7" id="preview_container">
 				<img id="preview">
