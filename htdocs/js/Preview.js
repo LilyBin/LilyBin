@@ -136,7 +136,7 @@ define([
 			return false;
 		});
 
-		this.container.mousewheel(function(e, delta, deltaX, deltaY) {
+		this.img.mousewheel(function(e, delta, deltaX, deltaY) {
 			_this.img.css({
 				top: _this.img.position().top + deltaY * 20,
 				left: _this.img.position().left - deltaX * 20
