@@ -68,7 +68,7 @@ require([
 		// Corresponds with Bootstrap's xs
 		var xs = mainWidth < 768;
 
-		$('a.noop-a').click(function (e) {
+		$('a.noop').click(function (e) {
 			e.preventDefault();
 		});
 		var codeContainer = $('#code_container, .CodeMirror, .CodeMirror-gutters')
