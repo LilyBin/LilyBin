@@ -24,15 +24,15 @@ require([
 ], function($, Preview, Editor) {
 	$(function() {
 		var score = {};
-		var versionState = 'stable';
 		var currentPage = window.location.pathname.slice(1);
 		score.id = currentPage.split('/')[0] || '';
 
 		var capitalized = { unstable: 'Unstable', stable: 'Stable' };
 		$('#version_selection a').click(function() {
-			versionState = this.dataset.version;
+			var state = this.dataset.version;
 			$('#version_btn')
-				.html(capitalized[versionState] +
+				.data('state', state)
+				.html(capitalized[state] +
 					' <span class="caret"></span>');
 			loadPreview();
 		});
@@ -43,11 +43,18 @@ require([
 		});
 
 		function loadPreview() {
-			preview.load({code: editor.getValue(), version: versionState});
+			preview.load({
+				code: editor.getValue(),
+				version: $('#version_btn').data('state')
+			});
 		}
 
 		function save() {
-			$.post('/save', {id: score.id, code: editor.getValue(), version: versionState}, function(response) {
+			$.post('/save', {
+				id: score.id,
+				code: editor.getValue(),
+				version: $('#version_btn').data('state')
+			}, function(response) {
 				window.location = '/' + response.id + '/' + response.revision;
 			}, 'json');
 		}
@@ -98,7 +105,8 @@ require([
 		$('#redo_button').click(editor.redo.bind(editor));
 
 		$.get('/api/' + currentPage).done(function(data) {
-			score.version = versionState = data.version;
+			score.version = data.version;
+			$('#version_btn').data('state', data.version);
 			$('#version_btn')
 				.html(capitalized[data.version] +
 					' <span class="caret"></span>');
