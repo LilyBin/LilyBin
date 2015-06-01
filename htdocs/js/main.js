@@ -28,7 +28,7 @@ require([
 		score.id = currentPage.split('/')[0] || '';
 
 		var capitalized = { unstable: 'Unstable', stable: 'Stable' };
-		$('#version_selection a').click(function() {
+		$('#version_sel a').click(function() {
 			var state = this.dataset.version;
 			$('#version_btn')
 				.data('state', state)
@@ -38,8 +38,8 @@ require([
 		});
 
 		$.get('https://s3-us-west-2.amazonaws.com/lilybin-tarballs/versions.json', function(data) {
-			$('#version_selection a[data-version="stable"]')  .append(' (' + data.stable   + ')');
-			$('#version_selection a[data-version="unstable"]').append(' (' + data.unstable + ')');
+			$('#version_sel a[data-version="stable"]')  .append(' (' + data.stable   + ')');
+			$('#version_sel a[data-version="unstable"]').append(' (' + data.unstable + ')');
 		});
 
 		function loadPreview() {
@@ -123,7 +123,7 @@ require([
 			preview.handleResponse({error: errorMessage});
 			$('#preview_button')     .off('click');
 			$('#save_button')        .off('click');
-			$('#version_selection a').off('click');
+			$('#version_sel a')      .off('click');
 		})
 
 		// Tooltips are weird-behaving on touch screen devices.
