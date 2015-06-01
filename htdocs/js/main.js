@@ -26,7 +26,7 @@ require([
 		var score = {};
 		var versionState = 'stable';
 		var currentPage = window.location.pathname.slice(1);
-		score.id = currentPage.split('/')[1] || '';
+		score.id = currentPage.split('/')[0] || '';
 
 		var capitalized = { unstable: 'Unstable', stable: 'Stable' };
 		$('#version_selection a').click(function() {
