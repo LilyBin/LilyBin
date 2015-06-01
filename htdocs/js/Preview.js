@@ -150,7 +150,7 @@ define([
 	};
 	Preview.prototype.fit = function(fitWidth) {
 		var $preview = this.controls;
-		var controlsHeight = $preview.outerHeight();
+		var controlsHeight = $preview.outerHeight(),
 			containerHeight = this.container.height() - controlsHeight,
 			controlsWidth = $preview.outerWidth(),
 			containerRatio = controlsWidth / containerHeight,
