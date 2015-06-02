@@ -71,10 +71,30 @@ require([
 		$('a.noop').click(function (e) {
 			e.preventDefault();
 		});
+
+		var preview = window.p = new Preview($('#preview_container'), score.id);
+		preview.event.bind('preview:scroll', function(e, lineInfo) {
+			// textedit:///path/to/file:1:2:3 <-- column
+			//                          ^ ^
+			//                          | +------ char
+			//                          +-------- line
+			// char   = number of character in this line **before** the
+			//          character that led to the note (key).
+			// column = 1 + 8 * (number of tabs before the key) +
+			//          (number of non-tab characters before the key)
+			//        = char + 1 + 7 * (number of tabs before the key)
+			var line = lineInfo.line;
+			var char = lineInfo.char;
+
+			editor.focus();
+			editor.scrollTo(line, char + 1);
+		});
+
 		var codeContainer = $('#code_container, .CodeMirror, .CodeMirror-gutters')
 			.css({height: (xs ? mainHeight * (5/12) : mainHeight) + 'px'});
 		var previewContainer = $('#preview_container')
 			.css({height: (xs ? mainHeight * (7/12) : mainHeight) + 'px'});
+		preview.resize();
 
 		var timer;
 		$(window).resize(function() {
@@ -90,12 +110,9 @@ require([
 					.css({height: (xs ? mainHeight * (5/12) : mainHeight) + 'px'});
 				previewContainer
 					.css({height: (xs ? mainHeight * (7/12) : mainHeight) + 'px'});
-
-				preview.fit();
+				preview.resize();
 			}, 200);
 		});
-
-		var preview = new Preview($('#preview_container'), score.id);
 
 		$('#preview_button').click(loadPreview);
 
