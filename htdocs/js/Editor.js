@@ -2,7 +2,8 @@ define([
 	'jquery',
 	'CodeMirror/lib/codemirror',
 	'CodeMirror/mode/stex/stex.min',
-	'CodeMirror/addon/edit/matchbrackets.min'
+	'CodeMirror/addon/edit/matchbrackets.min',
+	'plugins/spinner'
 ], function($, CodeMirror) {
 	function Editor($container, options) {
 		this.event = $({});
