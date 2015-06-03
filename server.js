@@ -76,10 +76,8 @@ app.post('/prepare_preview', function(req, res) {
 			this.id, req.body.code, req.body.version
 		).bind(this).then(function (ret) {
 			this.output = ret.stderr
-			this.pages = ret.pages
 		}, function (err) {
 			this.error = err.message;
-			this.pages = 0;
 		});
 	}).then(function () {
 		res.send(this);
