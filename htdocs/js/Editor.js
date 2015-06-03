@@ -2,7 +2,8 @@ define([
 	'jquery',
 	'CodeMirror/lib/codemirror',
 	'CodeMirror/mode/stex/stex.min',
-	'CodeMirror/addon/edit/matchbrackets.min'
+	'CodeMirror/addon/edit/matchbrackets.min',
+	'plugins/spinner'
 ], function($, CodeMirror) {
 	function Editor($container, options) {
 		this.event = $({});
@@ -47,6 +48,14 @@ define([
 	};
 	Editor.prototype.reset = function() {
 		this.cm.setValue('');
+	};
+	// line: the <line>th line from top.
+	// char: the <char>th character of the line.
+	Editor.prototype.scrollTo = function(line, char) {
+		return this.cm.doc.setCursor(line - 1, char);
+	};
+	Editor.prototype.focus = function() {
+		return this.cm.focus();
 	};
 
 	return Editor;

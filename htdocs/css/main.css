@@ -77,18 +77,8 @@
 	background-color: #F3F3F3;
 	overflow: hidden;
 }
-#preview_container img {
-	position: absolute;
-	cursor: move;
-	outline: 1px solid #DDD;
-}
-.preview_controls {
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 100;
-	padding: 6px;
-	background-color: #DDD;
+iframe {
+	border: 0;
 	width: 100%;
 }
 .preview_error {
