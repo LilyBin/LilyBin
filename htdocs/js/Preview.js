@@ -25,6 +25,9 @@ define([
 				case 'scroll':
 					_this.event.trigger('preview:scroll', event.data);
 					break;
+				case 'error':
+					_this.error.show().find('.message').text(event.data.text);
+					break;
 			}
 		}, false);
 	}
@@ -65,12 +68,21 @@ define([
 		}
 		this.cacheBuster = '?t=' + new Date().getTime();
 		this.id = data.id;
+		this.files = data.files;
+		if (!data.files.pdf) {
+			this.spinner.hide();
+			return this.error.show().find('.message').text(
+				'Compilation successful but no PDF generated.\n' +
+				'Please add `\\layout{}` to the `\\score` block.'
+			);
+		}
 		this.setPdfSrc();
 	};
 	Preview.prototype.setPdfSrc = function() {
 		var msg = {
 			id: this.id,
-			url: 'https://s3-us-west-2.amazonaws.com/lilybin-scores/' + this.id + '.pdf' + this.cacheBuster
+			url: 'https://s3-us-west-2.amazonaws.com/lilybin-scores/' + this.id + '.pdf' + this.cacheBuster,
+			midi: this.files.midi
 		};
 		this.iframe[0].contentWindow.postMessage(
 			msg,

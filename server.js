@@ -75,7 +75,8 @@ app.post('/prepare_preview', function(req, res) {
 		return lilypond(
 			this.id, req.body.code, req.body.version
 		).bind(this).then(function (ret) {
-			this.output = ret.stderr
+			this.output = ret.stderr;
+			this.files = ret.files;
 		}, function (err) {
 			this.error = err.message;
 		});
