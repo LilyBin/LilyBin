@@ -32,6 +32,7 @@ define([
 		var _this = this;
 		this.spinner.show();
 		this.error.hide();
+		this.resize();
 		score.id = this.id;
 		$.post('/prepare_preview', score, function(response) {
 			_this.handleResponse(response);
@@ -45,7 +46,6 @@ define([
 			this.resize();
 			return false;
 		}
-		this.resize();
 		this.cacheBuster = '?t=' + new Date().getTime();
 		this.id = data.id;
 		this.setPdfSrc();
