@@ -36,7 +36,24 @@ define([
 		score.id = this.id;
 		$.post('/prepare_preview', score, function(response) {
 			_this.handleResponse(response);
-		}, 'json');
+		}, 'json').fail(function(jqXHR, textStatus, errorThrown) {
+			switch (textStatus) {
+				case 'error':
+					error = 'Connection failed: ' + jqXHR.status;
+					error += ' ' + jqXHR.statusText;
+					break;
+				case 'timeout':
+					error = 'Connection timeout: ' + errorThrown;
+					break;
+				case 'abort':
+					error = 'Connection aborted: ' + errorThrown;
+					break;
+				case 'parsererror':
+					error = 'Unable to parse response:\n' + errorThrown;
+					error += '\nResponse:\n' + jqXHR.responseText;
+			}
+			_this.handleResponse({ error: error });
+		});
 	};
 	Preview.prototype.handleResponse = function(data) {
 		var _this = this;
