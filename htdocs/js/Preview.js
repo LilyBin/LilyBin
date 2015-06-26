@@ -13,7 +13,41 @@ define([
 
 		this.spinner = $('<div />').css({position: 'absolute', width: '100%', height: '100%'}).spinner({ colour: '100,100,100' }).hide();
 
-		this.error = $('.preview_error');
+		var error = $('.preview_error');
+		this.error = {
+			$parent: error,
+			inner: error.find('div')[0],
+			title: error.find('h3')[0],
+			message: error.find('pre')[0],
+			switchClass: function(to) {
+				var classes = this.title.classList;
+				for (var i = 0; i < classes.length; i++) {
+					if (/^text-/.test(classes[i])) {
+						classes.remove(classes[i]);
+						classes.add('text-' + to);
+						break;
+					}
+				}
+				classes = this.inner.classList;
+				for (var i = 0; i < classes.length; i++) {
+					if (/^bg-/.test(classes[i])) {
+						classes.remove(classes[i]);
+						classes.add('bg-' + to);
+						break;
+					}
+				}
+				return this;
+			},
+			show: function(title) {
+				this.$parent.show();
+				this.title.textContent = title;
+				return this;
+			},
+			hide: function() {
+				this.$parent.hide();
+				return this;
+			}
+		};
 		this.container.prepend(this.spinner);
 
 		window.addEventListener('message', function(event) {
@@ -26,7 +60,13 @@ define([
 					_this.event.trigger('preview:scroll', event.data);
 					break;
 				case 'error':
-					_this.error.show().find('.message').text(event.data.text);
+					_this.error.message.textContent = event.data.text;
+					_this.error.switchClass('danger').show('Error');
+					break;
+				case 'log':
+					_this.error.switchClass('');
+					_this.error[event.data.visible ? 'show' : 'hide']('Compile Log');
+					_this.resize();
 					break;
 			}
 		}, false);
@@ -60,10 +100,12 @@ define([
 	};
 	Preview.prototype.handleResponse = function(data) {
 		var _this = this;
+		this.error.message.textContent = data.error || data.output;
 		if (data.error) {
 			this.spinner.hide();
-			this.error.show().find('.message').text(data.error);
+			this.error.switchClass('danger').show('Error');
 			this.resize();
+			this.notifyCompFailed();
 			return false;
 		}
 		this.cacheBuster = '?t=' + new Date().getTime();
@@ -71,10 +113,11 @@ define([
 		this.files = data.files;
 		if (!data.files.pdf) {
 			this.spinner.hide();
-			return this.error.show().find('.message').text(
+			this.error.message.textContent =
 				'Compilation successful but no PDF generated.\n' +
-				'Please add `\\layout{}` to the `\\score` block.'
-			);
+				'Please add `\\layout{}` to the `\\score` block.';
+			this.error.switchClass('danger').show('Error');
+			return;
 		}
 		this.setPdfSrc();
 	};
@@ -89,9 +132,18 @@ define([
 			document.location.origin
 		);
 	};
+	Preview.prototype.notifyCompFailed = function() {
+		var msg = {
+			error: true
+		};
+		this.iframe[0].contentWindow.postMessage(
+			msg,
+			document.location.origin
+		);
+	};
 	Preview.prototype.resize = function() {
 		this.iframe.css({
-			height: this.container.height() - this.error[0].offsetHeight + 'px'
+			height: this.container.height() - this.error.$parent[0].offsetHeight + 'px'
 		});
 	};
 	return Preview;
