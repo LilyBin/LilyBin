@@ -1,4 +1,5 @@
 require.config({
+	waitSeconds: 60,
 	shim: {
 		'bootstrap': {
 			deps: [
