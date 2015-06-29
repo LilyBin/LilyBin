@@ -114,7 +114,7 @@ define([
 			this.error.show('Error', 'danger');
 			return;
 		}
-		this.error.hide();
+		if (this.error.title.textContent !== 'Compile Log') this.error.hide();
 		this.setPdfSrc();
 	};
 	Preview.prototype.setPdfSrc = function() {
