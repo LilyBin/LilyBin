@@ -69,11 +69,6 @@
 }
 
 #preview_container {
-	     -o-user-select: none;
-	   -moz-user-select: -moz-none;
-	 -khtml-user-select: none;
-	-webkit-user-select: none;
-	        user-select: none;
 	background-color: #F3F3F3;
 	overflow: hidden;
 }
