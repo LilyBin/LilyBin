@@ -27,7 +27,7 @@ define([
 				for (var i = 0; i < classes.length; i++) {
 					if (/^text-/.test(classes[i])) {
 						classes.remove(classes[i]);
-						classes.add('text-' + to);
+						classes.add('text-' + newClass);
 						break;
 					}
 				}
@@ -35,14 +35,16 @@ define([
 				for (var i = 0; i < classes.length; i++) {
 					if (/^bg-/.test(classes[i])) {
 						classes.remove(classes[i]);
-						classes.add('bg-' + to);
+						classes.add('bg-' + newClass);
 						break;
 					}
 				}
+				_this.resize();
 				return this;
 			},
 			hide: function() {
 				this.$parent.hide();
+				_this.resize();
 				return this;
 			}
 		};
@@ -63,7 +65,6 @@ define([
 					break;
 				case 'log':
 					_this.error[event.data.visible ? 'show' : 'hide']('Compile Log', '');
-					_this.resize();
 					break;
 			}
 		}, false);
@@ -72,7 +73,6 @@ define([
 		var _this = this;
 		this.spinner.show();
 		this.error.hide();
-		this.resize();
 		score.id = this.id;
 		$.post('/prepare_preview', score, function(response) {
 			_this.handleResponse(response);
@@ -101,7 +101,6 @@ define([
 		if (data.error) {
 			this.spinner.hide();
 			this.error.show('Error', 'danger');
-			this.resize();
 			this.notifyCompFailed();
 			return false;
 		}
