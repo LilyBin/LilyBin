@@ -15,6 +15,7 @@ define([
 
 		var error = $('.preview_error');
 		this.error = {
+			dontHide: false,
 			$parent: error,
 			inner: error.find('div')[0],
 			title: error.find('h3')[0],
@@ -64,6 +65,7 @@ define([
 					_this.error.show('Error', 'danger');
 					break;
 				case 'log':
+					_this.error.dontHide = event.data.visible;
 					_this.error[event.data.visible ? 'show' : 'hide']('Compile Log', '');
 					break;
 			}
@@ -114,7 +116,7 @@ define([
 			this.error.show('Error', 'danger');
 			return;
 		}
-		if (this.error.title.textContent !== 'Compile Log') this.error.hide();
+		if (!this.error.dontHide) this.error.hide();
 		this.setPdfSrc();
 	};
 	Preview.prototype.setPdfSrc = function() {
