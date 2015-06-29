@@ -72,7 +72,6 @@ define([
 	Preview.prototype.load = function(score) {
 		var _this = this;
 		this.spinner.show();
-		this.error.hide();
 		score.id = this.id;
 		$.post('/prepare_preview', score, function(response) {
 			_this.handleResponse(response);
@@ -115,6 +114,7 @@ define([
 			this.error.show('Error', 'danger');
 			return;
 		}
+		this.error.hide();
 		this.setPdfSrc();
 	};
 	Preview.prototype.setPdfSrc = function() {
