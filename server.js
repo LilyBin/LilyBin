@@ -90,21 +90,6 @@ app.post('/prepare_preview', function(req, res) {
 	}).catch(console.error);
 });
 
-app.get('/preview', function(req, res) {
-	const id = req.query.id,
-		page = req.query.page || 1,
-		cacheBuster = req.query.t ? '?t=' + req.query.t : '';
-
-	res.redirect(BUCKET + id + '-page' + page + '.png' + cacheBuster);
-});
-
-
-app.get('/downloadPDF', function(req, res) {
-	const id = req.query.id;
-
-	res.redirect(BUCKET + id + '.pdf');
-});
-
 app.get('/downloadMidi', function(req, res) {
 	const id = req.query.id;
 
