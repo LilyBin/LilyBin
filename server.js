@@ -90,12 +90,6 @@ app.post('/prepare_preview', function(req, res) {
 	}).catch(console.error);
 });
 
-app.get('/downloadMidi', function(req, res) {
-	const id = req.query.id;
-
-	res.redirect(BUCKET + id + '.midi');
-});
-
 app.get('/raw/:id/:revision?', function(req, res, next) {
 	const id = req.params.id,
 		revision = +req.params.revision || 1;
