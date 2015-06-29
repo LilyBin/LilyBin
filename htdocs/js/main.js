@@ -51,12 +51,14 @@ require([
 		}
 
 		function save() {
-			$.post('/save', {
-				id: score.id,
-				code: editor.getValue(),
-				version: $('#version_btn').data('state')
-			}, function(response) {
-				window.location = '/' + response.id + '/' + response.revision;
+			score.code = editor.getValue();
+			score.version = $('#version_btn').data('state');
+			$.post('/save', score, function(response) {
+				window.history.pushState({}, '', '/' + response.id + '/' + response.revision);
+				score.id = response.id;
+				preview.id = response.id;
+				editor.spinner.hide();
+				preview.load(score);
 			}, 'json');
 		}
 
