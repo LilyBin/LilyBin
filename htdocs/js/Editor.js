@@ -6,6 +6,7 @@ define([
 	'plugins/spinner'
 ], function($, CodeMirror) {
 	function Editor($container, options) {
+		var _this = this;
 		this.event = $({});
 
 		this.$container = $container.prepend(
@@ -23,6 +24,9 @@ define([
 				'Ctrl-Enter': this.loadPreview.bind(this),
 				'Ctrl-S': this.save.bind(this)
 			}
+		});
+		this.cm.on('change', function() {
+			_this.event.trigger('change');
 		});
 	}
 	Editor.prototype.openFile = function(contents, loadPreview) {

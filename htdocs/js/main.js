@@ -48,6 +48,9 @@ require([
 			preview.load({
 				code: editor.getValue(),
 				version: $('#version_btn').data('state')
+			}, function (err, response) {
+				if (err) return;
+				$('#preview_button').attr('disabled', true);
 			});
 		}
 
@@ -59,13 +62,23 @@ require([
 				score.id = response.id;
 				preview.id = response.id;
 				editor.spinner.hide();
-				preview.load(score);
+				preview.load(score, function (err, response) {
+					if (err) return;
+					$('#preview_button').attr('disabled', true);
+				});
 			}, 'json');
+		}
+
+		function changed() {
+			$('#preview_button, #save_button').attr('disabled', false);
 		}
 
 		var editor = new Editor($('#code_container'));
 		editor.event.bind({ 'preview': loadPreview,
-		                    'save'   : save });
+		                    'save'   : save,
+		                    'change' : changed });
+
+		if (score.id) $('#save_button').attr('disabled', true);
 
 		var mainHeight = $(window).height() - $('#header').outerHeight();
 		var mainWidth  = $(window).width();

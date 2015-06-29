@@ -12,6 +12,10 @@
 .navbar-lilybin a {
 	color: #fff;
 }
+.navbar-lilybin a[disabled] {
+	color: #aaa;
+	pointer-events: none;
+}
 .navbar-lilybin .navbar-nav > li > a:hover,
 .navbar-lilybin .navbar-nav > li > a:focus,
 .navbar-lilybin .navbar-nav > .open > a {
