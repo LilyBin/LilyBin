@@ -19,7 +19,10 @@ define([
 			inner: error.find('div')[0],
 			title: error.find('h3')[0],
 			message: error.find('pre')[0],
-			switchClass: function(to) {
+			show: function(title, newClass) {
+				this.$parent.show();
+				this.title.textContent = title;
+				if (newClass === undefined) return this;
 				var classes = this.title.classList;
 				for (var i = 0; i < classes.length; i++) {
 					if (/^text-/.test(classes[i])) {
@@ -36,11 +39,6 @@ define([
 						break;
 					}
 				}
-				return this;
-			},
-			show: function(title) {
-				this.$parent.show();
-				this.title.textContent = title;
 				return this;
 			},
 			hide: function() {
@@ -61,11 +59,10 @@ define([
 					break;
 				case 'error':
 					_this.error.message.textContent = event.data.text;
-					_this.error.switchClass('danger').show('Error');
+					_this.error.show('Error', 'danger');
 					break;
 				case 'log':
-					_this.error.switchClass('');
-					_this.error[event.data.visible ? 'show' : 'hide']('Compile Log');
+					_this.error[event.data.visible ? 'show' : 'hide']('Compile Log', '');
 					_this.resize();
 					break;
 			}
@@ -103,7 +100,7 @@ define([
 		this.error.message.textContent = data.error || data.output;
 		if (data.error) {
 			this.spinner.hide();
-			this.error.switchClass('danger').show('Error');
+			this.error.show('Error', 'danger');
 			this.resize();
 			this.notifyCompFailed();
 			return false;
@@ -116,7 +113,7 @@ define([
 			this.error.message.textContent =
 				'Compilation successful but no PDF generated.\n' +
 				'Please add `\\layout{}` to the `\\score` block.';
-			this.error.switchClass('danger').show('Error');
+			this.error.show('Error', 'danger');
 			return;
 		}
 		this.setPdfSrc();
