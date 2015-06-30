@@ -15,7 +15,7 @@ var lilypond = require('./lib/lilypond');
 
 // Serve static files from ./htdocs
 app.use(favicon(__dirname + '/htdocs/favicon.ico'));
-app.use(express.static(__dirname + '/htdocs'));
+app.use(express.static(__dirname + '/htdocs', {maxage: '1d'}));
 // We don't need the extended features right now.
 app.use(require('body-parser').urlencoded({extended: false}));
 
@@ -46,6 +46,7 @@ function getNewId(attempt) {
 }
 
 app.post('/save', function(req, res) {
+	res.set('Cache-Control', 'no-cache');
 	Promise.resolve(null).bind({id: req.body.id}).then(function() {
 		if (this.id) return;
 
@@ -65,6 +66,7 @@ app.post('/save', function(req, res) {
 });
 
 app.post('/prepare_preview', function(req, res) {
+	res.set('Cache-Control', 'no-cache');
 	Promise.resolve(null).bind({id: req.body.id}).then(function() {
 		if (this.id) return;
 
@@ -125,7 +127,9 @@ app.get('/api/:id?/:revision?', function(req, res, next) {
 });
 
 app.get('/:id?/:revision?', function(req, res, next) {
-	res.sendFile(__dirname + '/htdocs/index.html');
+	res.sendFile(__dirname + '/htdocs/index.html', {
+		maxAge: '1d'
+	});
 });
 
 const port = process.env.LISTEN_PORT || 3001;
