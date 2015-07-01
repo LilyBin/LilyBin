@@ -122,6 +122,31 @@ require([
 		$('#undo_button').click(editor.undo.bind(editor));
 		$('#redo_button').click(editor.redo.bind(editor));
 
+		$('#open_from_dropbox').click(function() {
+			Dropbox.choose({
+				success: function(files) {
+					var link = files[0].link;
+					editor.spinner.show();
+					$.get(link).done(function(code) {
+						score.code = code;
+						editor.openFile(code, !!code);
+					}).fail(function(err) {
+						var errorMessage = 'While fetching file from Dropbbox:\n\n';
+						if (err.responseJSON && err.responseJSON.err) {
+							errorMessage += err.responseJSON.err;
+						} else {
+							errorMessage += err.statusText;
+						}
+						preview.handleResponse({error: errorMessage});
+					}).always(function() {
+						editor.spinner.hide();
+					})
+				},
+				linkType: 'direct',
+				multiselect: false
+			});
+		});
+
 		$.get('/api/' + currentPage).done(function(data) {
 			score.version = data.version;
 			$('#version_btn').data('state', data.version);
