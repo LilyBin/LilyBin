@@ -147,6 +147,41 @@ require([
 			});
 		});
 
+		$('#save_to_dropbox').click(function() {
+			editor.spinner.show();
+			$.post('/save_temp', {
+				code: editor.getValue(),
+			}, function(response) {
+				editor.spinner.hide();
+				preview.error.hide();
+				var url = 'https://s3-us-west-2.amazonaws.com/lilybin-source-files/' + response.id + '.ly';
+				var $modal = $('#save_modal').modal('show');
+				$('#save_modal_ok').click(function(e) {
+					$(this).off('click');
+					$modal.modal('hide')
+					Dropbox.save(url, $('#file_name').val(), {
+						success: function() {},
+						error: function(errorMsg) {
+							preview.handleResponse({
+								error: 'Error while saving to Dropbox:\n' + errorMsg
+							});
+						}
+					});
+				});
+			}, 'json').fail(function(err) {
+				var errorMessage = 'Error while uploading score:\n\n';
+				if (err.responseJSON && err.responseJSON.err) {
+					errorMessage += err.responseJSON.err;
+				} else {
+					errorMessage += err.statusText;
+				}
+				preview.handleResponse({
+					error: errorMessage
+				});
+			});
+
+		});
+
 		$.get('/api/' + currentPage).done(function(data) {
 			score.version = data.version;
 			$('#version_btn').data('state', data.version);
@@ -176,5 +211,6 @@ require([
 			(!window.DocumentTouch || !(document instanceof DocumentTouch))) {
 			$('[data-toggle="tooltip"]').tooltip({ html: true, placement: 'bottom' });
 		}
+		$('#save_modal').modal({show: false});
 	});
 });
