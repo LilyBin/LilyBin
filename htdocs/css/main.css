@@ -68,6 +68,10 @@
 	padding: 0;
 }
 
+#code {
+    display: none;
+}
+
 #preview_container {
 	background-color: #F3F3F3;
 	overflow: hidden;
