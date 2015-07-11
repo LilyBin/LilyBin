@@ -43,6 +43,13 @@
 					<li><a href="#" class="noop" id="save_button" title="<kbd><kbd>Ctrl</kbd>+<kbd>S</kbd></kbd>" data-toggle="tooltip">Save</a></li>
 					<li><a href="#" class="noop" id="undo_button" title="<kbd><kbd>Ctrl</kbd>+<kbd>Z</kbd></kbd>" data-toggle="tooltip">Undo</a></li>
 					<li><a href="#" class="noop" id="redo_button" title="<kbd><kbd>Ctrl</kbd>+<kbd>Y</kbd></kbd>" data-toggle="tooltip">Redo</a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropbox <span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href="#" class="noop" id="open_from_dropbox">Open</a></li>
+							<li><a href="#" class="noop" id="save_to_dropbox">Save</a></li>
+						</ul>
+					</li>
 				</ul>
 			</div>
 		</nav>
@@ -60,6 +67,27 @@
 				</div>
 			</div>
 		</div>
+		<div class="modal" id="save_modal">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">Saving to Dropbox</h4>
+					</div>
+					<div class="modal-body">
+						<form>
+							<label for="file_name" class="control-label">File name</label>
+							<input type="text" class="form-control" value="score.ly" id="file_name">
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary" id="save_modal_ok">Proceed</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="eek7m8l7nnlv35a"></script>
 	</body>
 </html>
 
