@@ -152,11 +152,17 @@ require([
 
 		$('#save_to_dropbox').click(function() {
 			editor.spinner.show();
-			$.post(STAGE + '/save_temp', {
+			$.post(STAGE + '/save_temp', JSON.stringify({
 				code: editor.getValue(),
-			}, function(response) {
+			}), function(response) {
 				editor.spinner.hide();
 				preview.error.hide();
+				if (!response.id) {
+					var errorMessage = 'Error while uploading score:\n\n' + JSON.stringify(response, null, 2);
+					preview.handleResponse({
+						error: errorMessage
+					});
+				}
 				var url = 'https://s3-us-west-2.amazonaws.com/lilybin-source-files/' + response.id + '.ly';
 				var $modal = $('#save_modal').modal('show');
 				$('#save_modal_ok').click(function(e) {
