@@ -24,6 +24,7 @@ require([
 	'bootstrap'
 ], function($, Preview, Editor) {
 	$(function() {
+		var STAGE = 'https://7icpm9qr6a.execute-api.us-west-2.amazonaws.com/prod/';
 		var score = {};
 		var currentPage = window.location.pathname.slice(1);
 		score.id = currentPage.split('/')[0] || '';
@@ -151,7 +152,7 @@ require([
 
 		$('#save_to_dropbox').click(function() {
 			editor.spinner.show();
-			$.post('/save_temp', {
+			$.post(STAGE + '/save_temp', {
 				code: editor.getValue(),
 			}, function(response) {
 				editor.spinner.hide();
