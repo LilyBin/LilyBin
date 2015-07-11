@@ -14,8 +14,6 @@ const AWS = require('./lib/aws')
 const s3 = Promise.promisifyAll(new AWS.S3());
 const lilypond = require('./lib/lilypond');
 
-const TMP = 'lilybin-source-files';
-
 // Serve static files from ./htdocs
 app.use(favicon(__dirname + '/htdocs/favicon.ico'));
 app.use(express.static(__dirname + '/htdocs', {maxage: '1d'}));
@@ -65,24 +63,6 @@ app.post('/save', function(req, res) {
 			(err.text || err.message || '')
 		);
 		console.error(err.stack || err.message || err);
-	}).catch(console.error);
-});
-
-app.post('/save_temp', function(req, res) {
-	res.set('Cache-Control', 'no-cache');
-	var t = process.hrtime();
-	var id = t[0] + '-' + t[1];
-	s3.putObjectAsync({
-		Bucket      : TMP,
-		Key         : id + '.ly',
-		Body        : req.body.code,
-		ContentType : 'text/plain',
-		StorageClass: 'REDUCED_REDUNDANCY'
-	}).then(function() {
-		res.send({id});
-	}).catch(function(err) {
-		res.status(500).send({err: 'Failed to upload score: ' + err.message});
-		console.error(err.err || err);
 	}).catch(console.error);
 });
 
