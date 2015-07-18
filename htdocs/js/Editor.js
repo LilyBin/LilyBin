@@ -40,11 +40,11 @@ define([
 		return this.cm.redo();
 	}
 	Editor.prototype.loadPreview = function() {
-		this.event.trigger('editor:preview');
+		this.event.trigger('preview');
 	};
 	Editor.prototype.save = function() {
 		this.spinner.show();
-		this.event.trigger('editor:save');
+		this.event.trigger('save');
 	};
 	Editor.prototype.reset = function() {
 		this.cm.setValue('');

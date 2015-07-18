@@ -64,8 +64,8 @@ require([
 		}
 
 		var editor = new Editor($('#code_container'));
-		editor.event.bind({ 'editor:preview': loadPreview,
-		                    'editor:save'   : save });
+		editor.event.bind({ 'preview': loadPreview,
+		                    'save'   : save });
 
 		var mainHeight = $(window).height() - $('#header').outerHeight();
 		var mainWidth  = $(window).width();
@@ -77,7 +77,7 @@ require([
 		});
 
 		var preview = window.p = new Preview($('#preview_container'), score.id);
-		preview.event.bind('preview:scroll', function(e, lineInfo) {
+		preview.event.bind('scroll', function(e, lineInfo) {
 			// textedit:///path/to/file:1:2:3 <-- column
 			//                          ^ ^
 			//                          | +------ char

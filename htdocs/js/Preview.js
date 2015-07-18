@@ -58,7 +58,7 @@ define([
 					_this.spinner.hide();
 					break;
 				case 'scroll':
-					_this.event.trigger('preview:scroll', event.data);
+					_this.event.trigger('scroll', event.data);
 					break;
 				case 'error':
 					_this.error.message.textContent = event.data.text;
