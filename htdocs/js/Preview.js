@@ -71,12 +71,13 @@ define([
 			}
 		}, false);
 	}
-	Preview.prototype.load = function(score) {
+	Preview.prototype.load = function(score, callback) {
 		var _this = this;
 		this.spinner.show();
 		score.id = this.id;
 		$.post('/prepare_preview', score, function(response) {
 			_this.handleResponse(response);
+			callback(null, response);
 		}, 'json').fail(function(jqXHR, textStatus, errorThrown) {
 			switch (textStatus) {
 				case 'error':
@@ -94,6 +95,7 @@ define([
 					error += '\nResponse:\n' + jqXHR.responseText;
 			}
 			_this.handleResponse({ error: error });
+			callback(new Error(error));
 		});
 	};
 	Preview.prototype.handleResponse = function(data) {
