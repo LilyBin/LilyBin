@@ -2,6 +2,8 @@ define([
 	'jquery',
 	'plugins/spinner',
 ], function($) {
+	var STAGE = 'https://7icpm9qr6a.execute-api.us-west-2.amazonaws.com/prod/';
+
 	function Preview(container, id) {
 		var _this = this;
 		this.event = $({});
@@ -75,10 +77,16 @@ define([
 		var _this = this;
 		this.spinner.show();
 		score.id = this.id;
-		$.post('/prepare_preview', score, function(response) {
+		$.ajax({
+			type: 'POST',
+			url: STAGE + 'prepare_preview/' + score.version,
+			contentType: 'application/json; charset=utf-8',
+			data: JSON.stringify(score),
+			dataType: 'json',
+		}).then(function (response) {
 			_this.handleResponse(response);
 			callback(null, response);
-		}, 'json').fail(function(jqXHR, textStatus, errorThrown) {
+		}, function(jqXHR, textStatus, errorThrown) {
 			switch (textStatus) {
 				case 'error':
 					error = 'Connection failed: ' + jqXHR.status;
