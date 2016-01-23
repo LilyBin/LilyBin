@@ -1,4 +1,4 @@
 [submodule "htdocs/pdfjs"]
 	path = htdocs/pdfjs
-	url = https://github.com/TimothyGu/pdf.js-lilybin.git
+	url = https://github.com/LilyBin/pdf.js.git
 	branch = dist
