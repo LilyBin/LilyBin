@@ -40,14 +40,19 @@
 						</ul>
 					</li>
 					<li><a href="#" id="reset_button">Reset</a></li>
-					<li><a href="#" class="noop" id="save_button" title="<kbd><kbd>Ctrl</kbd>+<kbd>S</kbd></kbd>" data-toggle="tooltip">Save</a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Save to <span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href="#" class="noop" id="save_button" title="<kbd><kbd>Ctrl</kbd>+<kbd>S</kbd></kbd>" data-toggle="tooltip">LilyBin</a></li>
+							<li><a href="#" class="noop" id="save_to_dropbox">Dropbox</a></li>
+						</ul>
+					</li>
 					<li><a href="#" class="noop" id="undo_button" title="<kbd><kbd>Ctrl</kbd>+<kbd>Z</kbd></kbd>" data-toggle="tooltip">Undo</a></li>
 					<li><a href="#" class="noop" id="redo_button" title="<kbd><kbd>Ctrl</kbd>+<kbd>Y</kbd></kbd>" data-toggle="tooltip">Redo</a></li>
 					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropbox <span class="caret"></span></a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Open <span class="caret"></span></a>
 						<ul class="dropdown-menu" role="menu">
-							<li><a href="#" class="noop" id="open_from_dropbox">Open</a></li>
-							<li><a href="#" class="noop" id="save_to_dropbox">Save</a></li>
+							<li><a href="#" class="noop" id="open_from_dropbox">Dropbox</a></li>
 						</ul>
 					</li>
 				</ul>
