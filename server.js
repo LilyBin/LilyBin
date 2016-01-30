@@ -1,18 +1,12 @@
 // Promise might be already declared if Node.js/io.js is new enough. `const`
 // theoretically wouldn't work in those cases.
 var Promise = require('bluebird');
-const fs = Promise.promisifyAll(require('fs')),
-	path = require('path');
+const fs = Promise.promisifyAll(require('fs'));
 
 // Express
 const express = require('express'),
 	favicon = require('serve-favicon'),
 	app = express();
-
-// AWS
-const AWS = require('./lib/aws')
-const s3 = Promise.promisifyAll(new AWS.S3());
-const lilypond = require('./lib/lilypond');
 
 // Serve static files from ./htdocs
 app.use(favicon(__dirname + '/htdocs/favicon.ico'));
@@ -63,33 +57,6 @@ app.post('/save', function(req, res) {
 			(err.text || err.message || '')
 		);
 		console.error(err.stack || err.message || err);
-	}).catch(console.error);
-});
-
-app.post('/prepare_preview', function(req, res) {
-	res.set('Cache-Control', 'no-cache');
-	Promise.resolve(null).bind({id: req.body.id}).then(function() {
-		if (this.id) return;
-
-		return getNewId().bind(this).then(function(id) {
-			this.id = id;
-		});
-	}).then(function() {
-		return lilypond(
-			this.id, req.body.code, req.body.version
-		).bind(this).then(function (ret) {
-			this.output = ret.stderr;
-			this.files = ret.files;
-		}, function (err) {
-			this.error = err.message;
-		});
-	}).then(function () {
-		res.send(this);
-	}).catch(function (err) {
-		res.status(500).send('Internal server error: ' +
-			(err.text || err.message || '')
-		);
-		console.error(err.err || err);
 	}).catch(console.error);
 });
 
