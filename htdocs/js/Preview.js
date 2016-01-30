@@ -89,6 +89,12 @@ define([
 		}, function(jqXHR, textStatus, errorThrown) {
 			switch (textStatus) {
 				case 'error':
+					var response = jqXHR.responseJSON;
+					if (response && response.errorMessage) {
+						_this.handleResponse(response);
+						callback(null, response);
+						return;
+					}
 					error = 'Connection failed: ' + jqXHR.status;
 					error += ' ' + jqXHR.statusText;
 					break;
@@ -102,14 +108,14 @@ define([
 					error = 'Unable to parse response:\n' + errorThrown;
 					error += '\nResponse:\n' + jqXHR.responseText;
 			}
-			_this.handleResponse({ error: error });
+			_this.handleResponse({ errorMessage: error });
 			callback(new Error(error));
 		});
 	};
 	Preview.prototype.handleResponse = function(data) {
 		var _this = this;
-		this.error.message.textContent = data.error || data.output;
-		if (data.error) {
+		if (data.errorMessage) {
+			this.error.message.textContent = data.errorMessage;
 			this.spinner.hide();
 			this.error.show('Error', 'danger');
 			this.notifyCompFailed();
