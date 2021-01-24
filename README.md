@@ -10,7 +10,7 @@ Submit bugs and feature requests as GitHub issues.
 
 ## This project is discontinued!
 See [this issue](https://github.com/LilyBin/LilyBin/issues/87) for more information and future plans.
-You should consider using [Hackily](https://www.hacklily.org/) instead, [here](https://github.com/jnetterf) is its GitHub page.
+You should consider using [Hacklily](https://www.hacklily.org/) instead, [here](https://github.com/jnetterf) is its GitHub page.
 
 ### Running LilyBin
 
